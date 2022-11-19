@@ -7,6 +7,12 @@ import (
 	"strings"
 )
 
+type ILogger interface {
+	Info(v any)
+	Warn(v any)
+	Error(v any)
+}
+
 type logger struct {
 	infoLog  *log.Logger
 	warnLog  *log.Logger
@@ -22,15 +28,15 @@ func NewLogger() *logger {
 	}
 }
 
-func (l *logger) Info(v ...interface{}) {
-	l.infoLog.Println(v...)
+func (l *logger) Info(v any) {
+	l.infoLog.Println(v)
 }
 
-func (l *logger) Warn(v ...interface{}) {
-	l.warnLog.Println(v...)
+func (l *logger) Warn(v any) {
+	l.warnLog.Println(v)
 }
 
-func (l *logger) Error(v ...interface{}) {
+func (l *logger) Error(v any) {
 	_, filename, line, _ := runtime.Caller(1)
 	lastSlashIdx := strings.LastIndex(filename, "/")
 	filename = filename[lastSlashIdx+1:]
