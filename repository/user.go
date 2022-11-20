@@ -10,6 +10,7 @@ import (
 
 type IUserRepo interface {
 	InsertUser(user model.User) error
+	FindUserByEmail(email string) (*model.User, error)
 }
 
 type userRepo struct {
@@ -39,7 +40,6 @@ func (db *userRepo) InsertUser(user model.User) error {
 		user.ProfileImg,
 		user.UserTel,
 		user.Email,
-		user.Gmail,
 		time.Now(),
 		time.Now(),
 	)
@@ -49,4 +49,18 @@ func (db *userRepo) InsertUser(user model.User) error {
 	}
 
 	return nil
+}
+
+func (db *userRepo) FindUserByEmail(email string) (*model.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	var user model.User
+	err := db.conn.QueryRowContext(ctx, stmtSelectUserByEmail, email).Scan(&user.Email)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }

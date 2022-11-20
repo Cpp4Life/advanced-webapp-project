@@ -4,6 +4,7 @@ import (
 	"advanced-webapp-project/helper"
 	"advanced-webapp-project/model"
 	"advanced-webapp-project/service"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -38,6 +39,15 @@ func (ctl *authController) Register(c *gin.Context) {
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": err.Error()})
 		ctl.logger.Error(err.Error())
+		return
+	}
+
+	// Check if email is whether taken or not
+	isEmailCreated, _ := ctl.authService.GetUserByEmail(user.Email)
+	if isEmailCreated != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{
+			"message": fmt.Sprintf("%s is in use", isEmailCreated.Email),
+		})
 		return
 	}
 
