@@ -4,6 +4,7 @@ import (
 	"advanced-webapp-project/controller"
 	"advanced-webapp-project/db"
 	"advanced-webapp-project/helper"
+	"advanced-webapp-project/repository"
 	"advanced-webapp-project/service"
 	"github.com/gin-gonic/gin"
 )
@@ -14,13 +15,16 @@ var (
 	sqlDB  = db.NewSQLDB()
 	logger = helper.NewLogger()
 
-	jwtService = service.NewJWTService(logger)
+	userRepo = repository.NewUserRepo(sqlDB)
 
-	authController = controller.NewAuthHandler(logger, jwtService)
+	jwtService  = service.NewJWTService(logger)
+	authService = service.NewAuthService(userRepo)
+
+	authController = controller.NewAuthHandler(logger, jwtService, authService)
 )
 
 func main() {
-	defer sqlDB.Close()
+	defer db.Close(sqlDB)
 	r := gin.Default()
 
 	authRoutes := r.Group("/api/auth")

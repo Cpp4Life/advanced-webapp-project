@@ -23,14 +23,14 @@ type jwtCustomClaims struct {
 type jwtService struct {
 	secretKey string
 	issuer    string
-	logger    helper.ILogger
+	logger    *helper.Logger
 }
 
-func NewJWTService(log helper.ILogger) *jwtService {
+func NewJWTService(logger *helper.Logger) *jwtService {
 	return &jwtService{
 		secretKey: getSecretKey(),
 		issuer:    "2022-19-11-19KTPM3-Advanced-Web-App",
-		logger:    log,
+		logger:    logger,
 	}
 }
 
@@ -56,7 +56,7 @@ func (svc *jwtService) GenerateToken(userId string) string {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS384, claims)
-	svc.logger.Info(token.Claims)
+	svc.logger.Info("Token claims:", token.Claims)
 
 	encoded, err := token.SignedString([]byte(svc.secretKey))
 	if err != nil {

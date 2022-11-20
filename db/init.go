@@ -10,14 +10,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type sqlDB struct {
-	sqlDB *sql.DB
-}
-
-func NewSQLDB() *sqlDB {
-	return &sqlDB{
-		sqlDB: connect(),
-	}
+func NewSQLDB() *sql.DB {
+	return connect()
 }
 
 func getSourceString() string {
@@ -48,8 +42,8 @@ func connect() *sql.DB {
 	return db
 }
 
-func (i *sqlDB) Close() {
-	if err := i.sqlDB.Close(); err != nil {
+func Close(sqlDB *sql.DB) {
+	if err := sqlDB.Close(); err != nil {
 		panic(err)
 	}
 }

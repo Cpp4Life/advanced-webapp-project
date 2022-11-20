@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func AuthorizeJWT(svc service.IJWTService, log helper.ILogger) gin.HandlerFunc {
+func AuthorizeJWT(svc service.IJWTService, logger *helper.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		header := c.GetHeader("Authorization")
 
@@ -20,10 +20,11 @@ func AuthorizeJWT(svc service.IJWTService, log helper.ILogger) gin.HandlerFunc {
 		token, err := svc.ValidateToken(header)
 		if token.Valid {
 			claims := token.Claims.(jwt.MapClaims)
-			log.Info(claims)
+			logger.Info("Claims info:", claims)
 		} else {
-			log.Error(err)
+			logger.Error(err)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]any{"message": "invalid token!"})
+			return
 		}
 	}
 }

@@ -1,12 +1,17 @@
 package model
 
+import "time"
+
 type User struct {
-	Id         uint   `json:"id"`
-	FullName   string `json:"full_name" validate:"required"`
-	Password   string `json:"password" validate:"required,gte=8"`
-	Username   string `json:"username"`
-	Email      string `json:"email" validate:"email"`
-	Address    string `json:"address,omitempty"`
-	ProfileImg []byte `json:"profile_img,omitempty"`
-	UserTel    string `json:"user_tel,omitempty"`
+	Id         uint      `json:"id"`
+	FullName   string    `json:"full_name" binding:"required"`
+	Password   string    `json:"password" binding:"required,gte=8"`
+	Email      string    `json:"email" binding:"required,email"`
+	Gmail      string    `json:"gmail"`
+	Username   string    `json:"username,omitempty"`
+	Address    string    `json:"address,omitempty"`
+	ProfileImg []byte    `json:"profile_img,omitempty"`
+	UserTel    string    `json:"user_tel,omitempty"`
+	CreatedAt  time.Time `json:"created_at,omitempty"`
+	UpdatedAt  time.Time `json:"updated_at,omitempty"`
 }

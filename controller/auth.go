@@ -5,24 +5,26 @@ import (
 	"advanced-webapp-project/model"
 	"advanced-webapp-project/service"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 	"net/http"
+	"strconv"
 )
 
-type AuthController interface {
+type IAuthController interface {
 	Login(c *gin.Context)
 	Register(c *gin.Context)
 }
 
 type authController struct {
-	logger     helper.ILogger
-	jwtService service.IJWTService
+	logger      *helper.Logger
+	jwtService  service.IJWTService
+	authService service.IAuthService
 }
 
-func NewAuthHandler(log helper.ILogger, jwtSvc service.IJWTService) *authController {
+func NewAuthHandler(logger *helper.Logger, jwtSvc service.IJWTService, authSvc service.IAuthService) *authController {
 	return &authController{
-		logger:     log,
-		jwtService: jwtSvc,
+		logger:      logger,
+		jwtService:  jwtSvc,
+		authService: authSvc,
 	}
 }
 
@@ -32,20 +34,27 @@ func (ctl *authController) Login(c *gin.Context) {
 
 func (ctl *authController) Register(c *gin.Context) {
 	user := model.User{}
-	validate := validator.New()
+	// Bind JSON data to `User` model
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": err.Error()})
 		ctl.logger.Error(err.Error())
 		return
 	}
 
-	ctl.logger.Info(user)
-
-	if err := validate.Struct(user); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": err.Error()})
+	// Create user to db
+	if err := ctl.authService.CreateUser(user); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": "create user failed!"})
 		ctl.logger.Error(err.Error())
 		return
 	}
+
+	// Generate token
+	userId := strconv.Itoa(int(user.Id))
+	generatedToken := ctl.jwtService.GenerateToken(userId)
+	c.JSON(http.StatusCreated, map[string]any{
+		`user`:  user,
+		`token`: generatedToken,
+	})
 
 	return
 }
