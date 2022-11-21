@@ -11,12 +11,13 @@ import (
 )
 
 type IJWTService interface {
-	GenerateToken(userId string) string
+	GenerateToken(userId string, email string) string
 	ValidateToken(token string) (*jwt.Token, error)
 }
 
 type jwtCustomClaims struct {
-	userId string
+	UserId string `json:"user_id"`
+	Email  string `json:"email"`
 	jwt.StandardClaims
 }
 
@@ -40,18 +41,19 @@ func getSecretKey() string {
 	}
 	secretKey := os.Getenv("SECRET_KEY")
 	if secretKey == "" {
-		secretKey = "Golang-19KTPM3-AWA"
+		secretKey = "Golang"
 	}
 	return secretKey
 }
 
-func (svc *jwtService) GenerateToken(userId string) string {
+func (svc *jwtService) GenerateToken(userId string, email string) string {
 	claims := &jwtCustomClaims{
 		userId,
+		email,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 48).Unix(),
-			IssuedAt:  time.Now().Unix(),
 			Issuer:    svc.issuer,
+			IssuedAt:  time.Now().Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 48).Unix(),
 		},
 	}
 

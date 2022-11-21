@@ -9,8 +9,9 @@ import (
 )
 
 type IUserRepo interface {
-	InsertUser(user model.User) error
+	InsertUser(user model.User) (int64, error)
 	FindUserByEmail(email string) (*model.User, error)
+	VerifyCredential(email, password string) (*model.User, error)
 }
 
 type userRepo struct {
@@ -23,16 +24,16 @@ func NewUserRepo(sqldb *sql.DB) *userRepo {
 	}
 }
 
-func (db *userRepo) InsertUser(user model.User) error {
+func (db *userRepo) InsertUser(user model.User) (int64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 12)
 	if err != nil {
-		return err
+		return -1, err
 	}
 
-	_, err = db.conn.ExecContext(ctx, stmtInsertUser,
+	insertResult, err := db.conn.ExecContext(ctx, stmtInsertUser,
 		user.Username,
 		hashedPassword,
 		user.FullName,
@@ -45,10 +46,11 @@ func (db *userRepo) InsertUser(user model.User) error {
 	)
 
 	if err != nil {
-		return err
+		return -1, err
 	}
 
-	return nil
+	id, _ := insertResult.LastInsertId()
+	return id, nil
 }
 
 func (db *userRepo) FindUserByEmail(email string) (*model.User, error) {
@@ -56,11 +58,34 @@ func (db *userRepo) FindUserByEmail(email string) (*model.User, error) {
 	defer cancel()
 
 	var user model.User
-	err := db.conn.QueryRowContext(ctx, stmtSelectUserByEmail, email).Scan(&user.Email)
+	err := db.conn.QueryRowContext(ctx, stmtSelectUserByEmail, email).
+		Scan(
+			&user.Id,
+			&user.FullName,
+			&user.Username,
+			&user.Password,
+			&user.FullName,
+			&user.Address,
+			&user.ProfileImg,
+			&user.Email,
+		)
 
 	if err != nil {
 		return nil, err
 	}
 
 	return &user, nil
+}
+
+func (db *userRepo) VerifyCredential(email, password string) (*model.User, error) {
+	user, err := db.FindUserByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }

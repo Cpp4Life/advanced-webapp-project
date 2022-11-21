@@ -4,9 +4,11 @@ import (
 	"advanced-webapp-project/controller"
 	"advanced-webapp-project/db"
 	"advanced-webapp-project/helper"
+	"advanced-webapp-project/middleware"
 	"advanced-webapp-project/repository"
 	"advanced-webapp-project/service"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 const PORT = ":7777"
@@ -31,6 +33,13 @@ func main() {
 	{
 		authRoutes.POST("/login", authController.Login)
 		authRoutes.POST("/register", authController.Register)
+	}
+
+	groupRoutes := r.Group("/groups", middleware.AuthorizeJWT(jwtService, logger))
+	{
+		groupRoutes.GET("/", func(c *gin.Context) {
+			c.JSON(http.StatusOK, map[string]any{"message": "success"})
+		})
 	}
 
 	_ = r.Run(PORT)

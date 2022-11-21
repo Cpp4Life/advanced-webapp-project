@@ -30,7 +30,33 @@ func NewAuthHandler(logger *helper.Logger, jwtSvc service.IJWTService, authSvc s
 }
 
 func (ctl *authController) Login(c *gin.Context) {
+	user := model.User{}
+	// Bind JSON data to `User` model
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": err.Error()})
+		ctl.logger.Error(err.Error())
+		return
+	}
 
+	userData, err := ctl.authService.VerifyCredential(user.Email, user.Password)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]any{"message": "invalid credentials!"})
+		ctl.logger.Error(err.Error())
+		return
+	}
+
+	ctl.logger.Info(userData)
+
+	// Generate token
+	userId := strconv.Itoa(int(userData.Id))
+	ctl.logger.Info(userId, userData.Email)
+	generatedToken := ctl.jwtService.GenerateToken(userId, userData.Email)
+	c.JSON(http.StatusOK, map[string]any{
+		`user`:  userData,
+		`token`: generatedToken,
+	})
+
+	return
 }
 
 func (ctl *authController) Register(c *gin.Context) {
@@ -52,15 +78,16 @@ func (ctl *authController) Register(c *gin.Context) {
 	}
 
 	// Create user to db
-	if err := ctl.authService.CreateUser(user); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": "create user failed!"})
+	id, err := ctl.authService.CreateUser(user)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": " failed to create user!"})
 		ctl.logger.Error(err.Error())
 		return
 	}
 
 	// Generate token
-	userId := strconv.Itoa(int(user.Id))
-	generatedToken := ctl.jwtService.GenerateToken(userId)
+	userId := strconv.Itoa(int(id))
+	generatedToken := ctl.jwtService.GenerateToken(userId, user.Email)
 	c.JSON(http.StatusCreated, map[string]any{
 		`user`:  user,
 		`token`: generatedToken,
