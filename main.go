@@ -23,11 +23,13 @@ var (
 	authService = service.NewAuthService(userRepo)
 
 	authController = controller.NewAuthHandler(logger, jwtService, authService)
+	userController = controller.NewUserController(logger, jwtService)
 )
 
 func main() {
 	defer db.Close(sqlDB)
 	r := gin.Default()
+	r.Use(middleware.Cors())
 
 	authRoutes := r.Group("/api/auth")
 	{
@@ -35,7 +37,12 @@ func main() {
 		authRoutes.POST("/register", authController.Register)
 	}
 
-	groupRoutes := r.Group("/groups", middleware.AuthorizeJWT(jwtService, logger))
+	userRoutes := r.Group("user").Use(middleware.AuthorizeJWT(jwtService, logger))
+	{
+		userRoutes.GET("/profile", userController.GetProfile)
+	}
+
+	groupRoutes := r.Group("/groups")
 	{
 		groupRoutes.GET("/", func(c *gin.Context) {
 			c.JSON(http.StatusOK, map[string]any{"message": "success"})
