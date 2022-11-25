@@ -49,11 +49,10 @@ func (ctl *authController) Login(c *gin.Context) {
 
 	// Generate token
 	userId := strconv.Itoa(int(userData.Id))
-	ctl.logger.Info(userId, userData.Email)
 	generatedToken := ctl.jwtService.GenerateToken(userId, userData.Email)
 	c.JSON(http.StatusOK, map[string]any{
-		`user`:  userData,
-		`token`: generatedToken,
+		"user":  userData,
+		"token": generatedToken,
 	})
 
 	return
@@ -78,19 +77,15 @@ func (ctl *authController) Register(c *gin.Context) {
 	}
 
 	// Create user to db
-	id, err := ctl.authService.CreateUser(user)
+	_, err := ctl.authService.CreateUser(&user)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": " failed to create user!"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": "failed to create user!"})
 		ctl.logger.Error(err.Error())
 		return
 	}
 
-	// Generate token
-	userId := strconv.Itoa(int(id))
-	generatedToken := ctl.jwtService.GenerateToken(userId, user.Email)
 	c.JSON(http.StatusCreated, map[string]any{
-		`user`:  user,
-		`token`: generatedToken,
+		"user": user,
 	})
 
 	return

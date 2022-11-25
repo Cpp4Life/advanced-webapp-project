@@ -13,6 +13,7 @@ import (
 type IJWTService interface {
 	GenerateToken(userId string, email string) string
 	ValidateToken(token string) (*jwt.Token, error)
+	ExtractToken(token string) (map[string]any, bool)
 }
 
 type jwtCustomClaims struct {
@@ -58,8 +59,6 @@ func (svc *jwtService) GenerateToken(userId string, email string) string {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS384, claims)
-	svc.logger.Info("Token claims:", token.Claims)
-
 	encoded, err := token.SignedString([]byte(svc.secretKey))
 	if err != nil {
 		svc.logger.Error(err)
@@ -75,4 +74,11 @@ func (svc *jwtService) ValidateToken(token string) (*jwt.Token, error) {
 		}
 		return []byte(svc.secretKey), nil
 	})
+}
+
+func (svc *jwtService) ExtractToken(tokenStr string) (map[string]any, bool) {
+	token, _ := jwt.Parse(tokenStr, func(t_ *jwt.Token) (any, error) {
+		return []byte(svc.secretKey), nil
+	})
+	return token.Claims.(jwt.MapClaims), true
 }

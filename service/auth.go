@@ -6,7 +6,7 @@ import (
 )
 
 type IAuthService interface {
-	CreateUser(user model.User) (int64, error)
+	CreateUser(user *model.User) (int64, error)
 	GetUserByEmail(email string) (*model.User, error)
 	VerifyCredential(email, password string) (*model.User, error)
 }
@@ -21,7 +21,7 @@ func NewAuthService(userRepo repository.IUserRepo) *authService {
 	}
 }
 
-func (svc *authService) CreateUser(user model.User) (int64, error) {
+func (svc *authService) CreateUser(user *model.User) (int64, error) {
 	return svc.userRepo.InsertUser(user)
 }
 

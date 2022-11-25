@@ -7,6 +7,7 @@ import (
 	"advanced-webapp-project/middleware"
 	"advanced-webapp-project/repository"
 	"advanced-webapp-project/service"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -21,15 +22,16 @@ var (
 
 	jwtService  = service.NewJWTService(logger)
 	authService = service.NewAuthService(userRepo)
+	userService = service.NewUserService(userRepo)
 
 	authController = controller.NewAuthHandler(logger, jwtService, authService)
-	userController = controller.NewUserController(logger, jwtService)
+	userController = controller.NewUserController(logger, jwtService, userService)
 )
 
 func main() {
 	defer db.Close(sqlDB)
 	r := gin.Default()
-	r.Use(middleware.Cors())
+	r.Use(cors.New(middleware.InitCors()))
 
 	authRoutes := r.Group("/api/auth")
 	{

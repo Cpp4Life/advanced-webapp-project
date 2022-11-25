@@ -9,7 +9,11 @@ const (
 		"(username, password, full_name, address, profile_img, user_tel, email, created_at, updated_at) " +
 		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);"
 
-	stmtSelectUserByEmail = "SELECT id, full_name, username, password, full_name, address, profile_img, email " +
+	stmtSelectUserByEmail = "SELECT id, full_name, username, password, full_name, address, profile_img, email, created_at " +
 		"FROM `users` " +
 		"WHERE email LIKE ?;"
+
+	stmtSelectUserById = "SELECT id, full_name, username, password, full_name, address, profile_img, email, created_at " +
+		"FROM `users` " +
+		"WHERE id = ?;"
 )
