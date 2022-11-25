@@ -9,9 +9,10 @@ import (
 )
 
 type IUserRepo interface {
-	InsertUser(user model.User) (int64, error)
+	InsertUser(user *model.User) (int64, error)
 	FindUserByEmail(email string) (*model.User, error)
 	VerifyCredential(email, password string) (*model.User, error)
+	FindUserById(id string) (*model.User, error)
 }
 
 type userRepo struct {
@@ -24,7 +25,7 @@ func NewUserRepo(sqldb *sql.DB) *userRepo {
 	}
 }
 
-func (db *userRepo) InsertUser(user model.User) (int64, error) {
+func (db *userRepo) InsertUser(user *model.User) (int64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
@@ -50,6 +51,8 @@ func (db *userRepo) InsertUser(user model.User) (int64, error) {
 	}
 
 	id, _ := insertResult.LastInsertId()
+	user.Id = uint(id)
+	user.Password = ""
 	return id, nil
 }
 
@@ -68,6 +71,7 @@ func (db *userRepo) FindUserByEmail(email string) (*model.User, error) {
 			&user.Address,
 			&user.ProfileImg,
 			&user.Email,
+			&user.CreatedAt,
 		)
 
 	if err != nil {
@@ -88,4 +92,29 @@ func (db *userRepo) VerifyCredential(email, password string) (*model.User, error
 	}
 
 	return user, nil
+}
+
+func (db *userRepo) FindUserById(id string) (*model.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	var user model.User
+	err := db.conn.QueryRowContext(ctx, stmtSelectUserById, id).
+		Scan(
+			&user.Id,
+			&user.FullName,
+			&user.Username,
+			&user.Password,
+			&user.FullName,
+			&user.Address,
+			&user.ProfileImg,
+			&user.Email,
+			&user.CreatedAt,
+		)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
