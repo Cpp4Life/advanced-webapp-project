@@ -34,9 +34,11 @@ func (db *userRepo) InsertUser(user *model.User) (int64, error) {
 		return -1, err
 	}
 
+	user.SavedPassword = string(hashedPassword)
+
 	insertResult, err := db.conn.ExecContext(ctx, stmtInsertUser,
 		user.Username,
-		hashedPassword,
+		user.SavedPassword,
 		user.FullName,
 		user.Address,
 		user.ProfileImg,
@@ -66,8 +68,7 @@ func (db *userRepo) FindUserByEmail(email string) (*model.User, error) {
 			&user.Id,
 			&user.FullName,
 			&user.Username,
-			&user.Password,
-			&user.FullName,
+			&user.SavedPassword,
 			&user.Address,
 			&user.ProfileImg,
 			&user.Email,
@@ -87,7 +88,7 @@ func (db *userRepo) VerifyCredential(email, password string) (*model.User, error
 		return nil, err
 	}
 
-	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+	if err = bcrypt.CompareHashAndPassword([]byte(user.SavedPassword), []byte(password)); err != nil {
 		return nil, err
 	}
 
@@ -104,8 +105,7 @@ func (db *userRepo) FindUserById(id string) (*model.User, error) {
 			&user.Id,
 			&user.FullName,
 			&user.Username,
-			&user.Password,
-			&user.FullName,
+			&user.SavedPassword,
 			&user.Address,
 			&user.ProfileImg,
 			&user.Email,
