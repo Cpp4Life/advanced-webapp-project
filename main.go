@@ -26,7 +26,7 @@ var (
 	groupService = service.NewGroupService(groupRepo)
 
 	authController  = controller.NewAuthHandler(logger, jwtService, authService)
-	userController  = controller.NewUserController(logger, jwtService, userService)
+	userController  = controller.NewUserController(logger, jwtService, userService, groupService)
 	groupController = controller.NewGroupController(logger, jwtService, groupService, userService)
 )
 
@@ -41,15 +41,18 @@ func main() {
 		authRoutes.POST("/register", authController.Register)
 	}
 
-	userRoutes := r.Group("user")
+	userRoutes := r.Group("accounts").Use(middleware.AuthorizeJWT(jwtService, logger))
 	{
-		userRoutes.GET("/profile", middleware.AuthorizeJWT(jwtService, logger), userController.GetProfile)
+		userRoutes.GET("/profile", userController.GetProfile)
+		userRoutes.POST("/create-group", groupController.CreateGroup)
+		userRoutes.GET("/manage-groups", groupController.GetCreatedGroupsByUserId)
+		userRoutes.GET("/joined-groups", groupController.GetJoinedGroupsByUserId)
 	}
 
 	groupRoutes := r.Group("/group")
 	{
 		groupRoutes.GET("/get-all", groupController.GetAllGroups)
-		groupRoutes.POST("/", middleware.AuthorizeJWT(jwtService, logger), groupController.CreateGroup)
+		groupRoutes.GET("/:id/details", groupController.GetGroupMemberDetailsByGroupId)
 	}
 
 	_ = r.Run(PORT)

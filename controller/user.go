@@ -12,22 +12,23 @@ type IUserController interface {
 }
 
 type userController struct {
-	logger      *helper.Logger
-	jwtService  service.IJWTService
-	userService service.IUserService
+	logger       *helper.Logger
+	jwtService   service.IJWTService
+	userService  service.IUserService
+	groupService service.IGroupService
 }
 
-func NewUserController(logger *helper.Logger, jwtSvc service.IJWTService, userSvc service.IUserService) *userController {
+func NewUserController(logger *helper.Logger, jwtSvc service.IJWTService, userSvc service.IUserService, groupSvc service.IGroupService) *userController {
 	return &userController{
-		logger:      logger,
-		jwtService:  jwtSvc,
-		userService: userSvc,
+		logger:       logger,
+		jwtService:   jwtSvc,
+		userService:  userSvc,
+		groupService: groupSvc,
 	}
 }
 
 func (u *userController) GetProfile(c *gin.Context) {
-	claims, _ := u.jwtService.ExtractToken(c.GetHeader("Authorization"))
-	userId := claims["user_id"].(string)
+	userId := u.getUserId(c.GetHeader("Authorization"))
 	user, err := u.userService.GetProfile(userId)
 
 	if err != nil {
@@ -40,4 +41,9 @@ func (u *userController) GetProfile(c *gin.Context) {
 	})
 
 	return
+}
+
+func (u *userController) getUserId(token string) string {
+	claims, _ := u.jwtService.ExtractToken(token)
+	return claims["user_id"].(string)
 }

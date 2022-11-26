@@ -8,6 +8,9 @@ import (
 type IGroupService interface {
 	GetAllGroups() ([]*model.Group, error)
 	CreateGroup(group *model.Group, userId string) (int64, error)
+	GetCreatedGroupsByUserId(userId string) ([]*model.Group, error)
+	GetJoinedGroupsByUserId(userId string) ([]*model.GroupUser, error)
+	GetGroupMemberDetailsByGroupId(groupId string) ([]*model.GroupUser, error)
 }
 
 type groupService struct {
@@ -26,4 +29,16 @@ func (svc *groupService) GetAllGroups() ([]*model.Group, error) {
 
 func (svc *groupService) CreateGroup(group *model.Group, userId string) (int64, error) {
 	return svc.groupRepo.InsertGroup(group, userId)
+}
+
+func (svc *groupService) GetCreatedGroupsByUserId(userId string) ([]*model.Group, error) {
+	return svc.groupRepo.FindCreatedGroupsByUserId(userId)
+}
+
+func (svc *groupService) GetJoinedGroupsByUserId(userId string) ([]*model.GroupUser, error) {
+	return svc.groupRepo.FindJoinedGroupsByUserId(userId)
+}
+
+func (svc *groupService) GetGroupMemberDetailsByGroupId(groupId string) ([]*model.GroupUser, error) {
+	return svc.groupRepo.FindGroupMemberDetailsByGroupId(groupId)
 }

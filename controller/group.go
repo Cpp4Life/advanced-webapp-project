@@ -11,6 +11,9 @@ import (
 type IGroupController interface {
 	GetAllGroups(c *gin.Context)
 	CreateGroup(c *gin.Context)
+	GetCreatedGroupsByUserId(c *gin.Context)
+	GetJoinedGroupsByUserId(c *gin.Context)
+	GetGroupMemberDetailsByGroupId(c *gin.Context)
 }
 
 type groupController struct {
@@ -32,13 +35,13 @@ func NewGroupController(logger *helper.Logger, jwtSvc service.IJWTService, group
 func (g *groupController) GetAllGroups(c *gin.Context) {
 	groups, err := g.groupService.GetAllGroups()
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "error while getting groups"})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "no groups found!"})
 		g.logger.Error(err.Error())
 		return
 	}
 
 	c.JSON(http.StatusOK, map[string]any{
-		"groups": groups,
+		"groups_data": groups,
 	})
 
 	return
@@ -70,8 +73,60 @@ func (g *groupController) CreateGroup(c *gin.Context) {
 
 	group.Owner = userData
 	c.JSON(http.StatusCreated, map[string]any{
-		"group": group,
+		"group_data": group,
 	})
 
 	return
+}
+
+func (g *groupController) GetCreatedGroupsByUserId(c *gin.Context) {
+	userId := g.getUserId(c.GetHeader("Authorization"))
+	groups, err := g.groupService.GetCreatedGroupsByUserId(userId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "no groups found!"})
+		g.logger.Error(err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]any{
+		"groups_data": groups,
+	})
+
+	return
+}
+
+func (g *groupController) GetJoinedGroupsByUserId(c *gin.Context) {
+	userId := g.getUserId(c.GetHeader("Authorization"))
+	groups, err := g.groupService.GetJoinedGroupsByUserId(userId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "no groups found!"})
+		g.logger.Error(err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]any{
+		"groups_data": groups,
+	})
+
+	return
+}
+
+func (g *groupController) GetGroupMemberDetailsByGroupId(c *gin.Context) {
+	groups, err := g.groupService.GetGroupMemberDetailsByGroupId(c.Param("id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "no groups found!"})
+		g.logger.Error(err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]any{
+		"groups_data": groups,
+	})
+
+	return
+}
+
+func (g *groupController) getUserId(token string) string {
+	claims, _ := g.jwtService.ExtractToken(token)
+	return claims["user_id"].(string)
 }

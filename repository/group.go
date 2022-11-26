@@ -11,6 +11,10 @@ import (
 type IGroupRepo interface {
 	FindAll() ([]*model.Group, error)
 	InsertGroup(group *model.Group, userId string) (int64, error)
+	FindCreatedGroupsByUserId(userId string) ([]*model.Group, error)
+	FindJoinedGroupsByUserId(userId string) ([]*model.GroupUser, error)
+	FindGroupMemberDetailsByGroupId(groupId string) ([]*model.GroupUser, error)
+	FindGroupById(groupId string) (*model.Group, error)
 }
 
 type groupRepo struct {
@@ -27,7 +31,7 @@ func (db *groupRepo) FindAll() ([]*model.Group, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	rows, err := db.conn.QueryContext(ctx, stmtFindAllGroups)
+	rows, err := db.conn.QueryContext(ctx, stmtSelectAllGroups)
 	if err != nil {
 		return nil, err
 	}
@@ -72,4 +76,122 @@ func (db *groupRepo) InsertGroup(group *model.Group, userId string) (int64, erro
 	id, _ := insertResult.LastInsertId()
 	group.Id = uint(id)
 	return id, nil
+}
+
+func (db *groupRepo) FindCreatedGroupsByUserId(userId string) ([]*model.Group, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	rows, err := db.conn.QueryContext(ctx, stmtSelectGroupsByUserId, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var groups []*model.Group
+	for rows.Next() {
+		var group model.Group
+		if err = rows.Scan(
+			&group.Id,
+			&group.Name,
+			&group.Link,
+			&group.Desc,
+			&group.CreatedAt); err != nil {
+			return nil, errors.New("error scanning")
+		}
+
+		groups = append(groups, &group)
+	}
+
+	return groups, nil
+}
+
+func (db *groupRepo) FindJoinedGroupsByUserId(userId string) ([]*model.GroupUser, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	rows, err := db.conn.QueryContext(ctx, stmtSelectJoinedGroupsByUserId, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var groupUsers []*model.GroupUser
+	for rows.Next() {
+		var group model.Group
+		var groupUser model.GroupUser
+
+		if err = rows.Scan(
+			&group.Id,
+			&group.Name,
+			&group.Link,
+			&group.Desc,
+			&group.CreatedAt,
+			&groupUser.Role,
+			&groupUser.JoinedAt); err != nil {
+			return nil, errors.New("error scanning")
+		}
+
+		groupUser.GroupInfo = &group
+		groupUsers = append(groupUsers, &groupUser)
+	}
+
+	return groupUsers, nil
+}
+
+func (db *groupRepo) FindGroupMemberDetailsByGroupId(groupId string) ([]*model.GroupUser, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	rows, err := db.conn.QueryContext(ctx, stmtSelectGroupMemberDetailsById, groupId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var groupUsers []*model.GroupUser
+	for rows.Next() {
+		var user model.User
+		var groupUser model.GroupUser
+		if err = rows.Scan(
+			&user.Id,
+			&user.FullName,
+			&user.Username,
+			&user.SavedPassword,
+			&user.Address,
+			&user.ProfileImg,
+			&user.Email,
+			&user.CreatedAt,
+			&groupUser.Role,
+			&groupUser.JoinedAt); err != nil {
+			return nil, errors.New("error scanning")
+		}
+
+		groupUser.UserInfo = &user
+		groupUsers = append(groupUsers, &groupUser)
+	}
+
+	return groupUsers, nil
+}
+
+func (db *groupRepo) FindGroupById(groupId string) (*model.Group, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	var group model.Group
+	var user model.User
+	err := db.conn.QueryRowContext(ctx, stmtSelectGroupById, groupId).Scan(
+		&group.Id,
+		&group.Name,
+		&group.Link,
+		&group.Desc,
+		&group.CreatedAt,
+		&user.Id)
+
+	if err != nil {
+		return nil, errors.New("error scanning")
+	}
+
+	group.Owner = &user
+	return &group, nil
 }

@@ -5,10 +5,10 @@ import (
 )
 
 type Group struct {
-	Id        uint      `json:"id"`
+	Id        uint      `json:"id,omitempty"`
 	Name      string    `json:"name" binding:"required"`
 	Link      string    `json:"link" binding:"required"`
 	Desc      string    `json:"desc,omitempty"`
 	CreatedAt time.Time `json:"created_at"`
-	Owner     *User     `json:"owner"`
+	Owner     *User     `json:"owner,omitempty"`
 }
