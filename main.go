@@ -9,7 +9,6 @@ import (
 	"advanced-webapp-project/service"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 const PORT = ":7777"
@@ -18,14 +17,17 @@ var (
 	sqlDB  = db.NewSQLDB()
 	logger = helper.NewLogger()
 
-	userRepo = repository.NewUserRepo(sqlDB)
+	userRepo  = repository.NewUserRepo(sqlDB)
+	groupRepo = repository.NewGroupRepo(sqlDB)
 
-	jwtService  = service.NewJWTService(logger)
-	authService = service.NewAuthService(userRepo)
-	userService = service.NewUserService(userRepo)
+	jwtService   = service.NewJWTService(logger)
+	authService  = service.NewAuthService(userRepo)
+	userService  = service.NewUserService(userRepo)
+	groupService = service.NewGroupService(groupRepo)
 
-	authController = controller.NewAuthHandler(logger, jwtService, authService)
-	userController = controller.NewUserController(logger, jwtService, userService)
+	authController  = controller.NewAuthHandler(logger, jwtService, authService)
+	userController  = controller.NewUserController(logger, jwtService, userService)
+	groupController = controller.NewGroupController(logger, jwtService, groupService, userService)
 )
 
 func main() {
@@ -39,16 +41,15 @@ func main() {
 		authRoutes.POST("/register", authController.Register)
 	}
 
-	userRoutes := r.Group("user").Use(middleware.AuthorizeJWT(jwtService, logger))
+	userRoutes := r.Group("user")
 	{
-		userRoutes.GET("/profile", userController.GetProfile)
+		userRoutes.GET("/profile", middleware.AuthorizeJWT(jwtService, logger), userController.GetProfile)
 	}
 
-	groupRoutes := r.Group("/groups")
+	groupRoutes := r.Group("/group")
 	{
-		groupRoutes.GET("/", func(c *gin.Context) {
-			c.JSON(http.StatusOK, map[string]any{"message": "success"})
-		})
+		groupRoutes.GET("/get-all", groupController.GetAllGroups)
+		groupRoutes.POST("/", middleware.AuthorizeJWT(jwtService, logger), groupController.CreateGroup)
 	}
 
 	_ = r.Run(PORT)
