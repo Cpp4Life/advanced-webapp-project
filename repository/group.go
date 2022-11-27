@@ -74,6 +74,18 @@ func (db *groupRepo) InsertGroup(group *model.Group, userId string) (int64, erro
 	}
 
 	id, _ := insertResult.LastInsertId()
+
+	_, err = db.conn.ExecContext(ctx, stmtInsertGroupMember,
+		id,
+		userId,
+		1,
+		time.Now(),
+	)
+
+	if err != nil {
+		return -1, err
+	}
+
 	group.Id = uint(id)
 	return id, nil
 }

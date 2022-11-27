@@ -74,6 +74,7 @@ func (db *userRepo) FindUserByEmail(email string) (*model.User, error) {
 			&user.ProfileImg,
 			&user.Email,
 			&user.CreatedAt,
+			&user.UpdatedAt,
 		)
 
 	if err != nil {
@@ -111,6 +112,7 @@ func (db *userRepo) FindUserById(id string) (*model.User, error) {
 			&user.ProfileImg,
 			&user.Email,
 			&user.CreatedAt,
+			&user.UpdatedAt,
 		)
 
 	if err != nil {
@@ -124,7 +126,13 @@ func (db *userRepo) ModifyUserById(id string, user model.User) (int64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	updateResult, err := db.conn.ExecContext(ctx, stmtUpdateUserById, user.FullName, user.Username, user.ProfileImg, id)
+	updateResult, err := db.conn.ExecContext(ctx, stmtUpdateUserById,
+		user.FullName,
+		user.Username,
+		user.ProfileImg,
+		time.Now(),
+		id,
+	)
 	if err != nil {
 		return -1, err
 	}

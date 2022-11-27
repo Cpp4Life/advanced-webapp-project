@@ -7,10 +7,9 @@ CREATE TABLE `users`
     `password`    VARCHAR(250) NOT NULL,
     `full_name`   VARCHAR(50)  NOT NULL,
     `email`       VARCHAR(50)  NOT NULL,
-    `gmail`       VARCHAR(50),
-    `address`     VARCHAR(250),
-    `profile_img` VARCHAR(250),
-    `user_tel`    VARCHAR(13),
+    `address`     VARCHAR(250) DEFAULT '',
+    `profile_img` VARCHAR(250) DEFAULT '',
+    `user_tel`    VARCHAR(13)  DEFAULT '',
     `created_at`  DATETIME,
     `updated_at`  DATETIME
 ) DEFAULT CHARSET = utf8mb4;

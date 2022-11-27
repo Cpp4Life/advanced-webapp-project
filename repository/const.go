@@ -9,21 +9,25 @@ const (
 		"(username, password, full_name, address, profile_img, user_tel, email, created_at, updated_at) " +
 		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);"
 
-	stmtSelectUserByEmail = "SELECT id, full_name, username, password, address, profile_img, email, created_at " +
+	stmtSelectUserByEmail = "SELECT id, full_name, username, password, address, profile_img, email, created_at, updated_at " +
 		"FROM `users` " +
 		"WHERE email LIKE ?;"
 
-	stmtSelectUserById = "SELECT id, full_name, username, password, address, profile_img, email, created_at " +
+	stmtSelectUserById = "SELECT id, full_name, username, password, address, profile_img, email, created_at, updated_at " +
 		"FROM `users` " +
 		"WHERE id = ?;"
 
 	stmtUpdateUserById = "UPDATE `users` " +
-		"SET full_name = ?, username = ?, profile_img = ? " +
+		"SET full_name = ?, username = ?, profile_img = ?, updated_at = ? " +
 		"WHERE id = ?;"
 
 	stmtInsertGroup = "INSERT INTO `groups` " +
 		"(name, link, `desc`, created_at, owner) " +
 		"VALUES (?, ?, ?, ?, ?);"
+
+	stmtInsertGroupMember = "INSERT INTO `group_members` " +
+		"(group_id, member_id, role, joined_at) " +
+		"VALUES (?, ?, ?, ?);"
 
 	stmtSelectAllGroups = "SELECT id, name, link, `desc`, created_at, owner FROM `groups`;"
 
