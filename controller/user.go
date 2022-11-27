@@ -2,6 +2,7 @@ package controller
 
 import (
 	"advanced-webapp-project/helper"
+	"advanced-webapp-project/model"
 	"advanced-webapp-project/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 
 type IUserController interface {
 	GetProfile(c *gin.Context)
+	UpdateProfile(c *gin.Context)
 }
 
 type userController struct {
@@ -40,6 +42,28 @@ func (u *userController) GetProfile(c *gin.Context) {
 		"user": user,
 	})
 
+	return
+}
+
+func (u *userController) UpdateProfile(c *gin.Context) {
+	user := model.User{}
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": err.Error()})
+		u.logger.Error(err.Error())
+		return
+	}
+
+	userId := u.getUserId(c.GetHeader("Authorization"))
+	_, err := u.userService.UpdateProfile(userId, user)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "failed to update user"})
+		u.logger.Error(err.Error())
+		return
+	}
+
+	c.JSON(http.StatusNoContent, map[string]any{
+		"message": "Update successfully",
+	})
 	return
 }
 

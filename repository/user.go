@@ -13,6 +13,7 @@ type IUserRepo interface {
 	FindUserByEmail(email string) (*model.User, error)
 	VerifyCredential(email, password string) (*model.User, error)
 	FindUserById(id string) (*model.User, error)
+	ModifyUserById(id string, user model.User) (int64, error)
 }
 
 type userRepo struct {
@@ -117,4 +118,16 @@ func (db *userRepo) FindUserById(id string) (*model.User, error) {
 	}
 
 	return &user, nil
+}
+
+func (db *userRepo) ModifyUserById(id string, user model.User) (int64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	updateResult, err := db.conn.ExecContext(ctx, stmtUpdateUserById, user.FullName, user.Username, user.ProfileImg, id)
+	if err != nil {
+		return -1, err
+	}
+
+	return updateResult.LastInsertId()
 }

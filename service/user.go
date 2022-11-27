@@ -7,6 +7,7 @@ import (
 
 type IUserService interface {
 	GetProfile(id string) (*model.User, error)
+	UpdateProfile(id string, user model.User) (int64, error)
 }
 
 type userService struct {
@@ -21,4 +22,8 @@ func NewUserService(userRepo repository.IUserRepo) *userService {
 
 func (svc *userService) GetProfile(id string) (*model.User, error) {
 	return svc.userRepo.FindUserById(id)
+}
+
+func (svc *userService) UpdateProfile(id string, user model.User) (int64, error) {
+	return svc.userRepo.ModifyUserById(id, user)
 }

@@ -44,6 +44,7 @@ func main() {
 	userRoutes := r.Group("accounts").Use(middleware.AuthorizeJWT(jwtService, logger))
 	{
 		userRoutes.GET("/profile", userController.GetProfile)
+		userRoutes.POST("/edit", userController.UpdateProfile)
 		userRoutes.POST("/create-group", groupController.CreateGroup)
 		userRoutes.GET("/manage-groups", groupController.GetCreatedGroupsByUserId)
 		userRoutes.GET("/joined-groups", groupController.GetJoinedGroupsByUserId)

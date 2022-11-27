@@ -17,6 +17,10 @@ const (
 		"FROM `users` " +
 		"WHERE id = ?;"
 
+	stmtUpdateUserById = "UPDATE `users` " +
+		"SET full_name = ?, username = ?, profile_img = ? " +
+		"WHERE id = ?;"
+
 	stmtInsertGroup = "INSERT INTO `groups` " +
 		"(name, link, `desc`, created_at, owner) " +
 		"VALUES (?, ?, ?, ?, ?);"
