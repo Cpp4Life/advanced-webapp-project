@@ -11,6 +11,7 @@ type IGroupService interface {
 	GetCreatedGroupsByUserId(userId string) ([]*model.Group, error)
 	GetJoinedGroupsByUserId(userId string) ([]*model.GroupUser, error)
 	GetGroupMemberDetailsByGroupId(groupId string) ([]*model.GroupUser, error)
+	GetGroupById(groupId string) (*model.Group, error)
 }
 
 type groupService struct {
@@ -41,4 +42,8 @@ func (svc *groupService) GetJoinedGroupsByUserId(userId string) ([]*model.GroupU
 
 func (svc *groupService) GetGroupMemberDetailsByGroupId(groupId string) ([]*model.GroupUser, error) {
 	return svc.groupRepo.FindGroupMemberDetailsByGroupId(groupId)
+}
+
+func (svc *groupService) GetGroupById(groupId string) (*model.Group, error) {
+	return svc.groupRepo.FindGroupById(groupId)
 }

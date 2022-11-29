@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"advanced-webapp-project/helper"
 	"advanced-webapp-project/model"
 	"advanced-webapp-project/service"
+	"advanced-webapp-project/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -16,12 +16,12 @@ type IAuthController interface {
 }
 
 type authController struct {
-	logger      *helper.Logger
+	logger      *utils.Logger
 	jwtService  service.IJWTService
 	authService service.IAuthService
 }
 
-func NewAuthHandler(logger *helper.Logger, jwtSvc service.IJWTService, authSvc service.IAuthService) *authController {
+func NewAuthHandler(logger *utils.Logger, jwtSvc service.IJWTService, authSvc service.IAuthService) *authController {
 	return &authController{
 		logger:      logger,
 		jwtService:  jwtSvc,

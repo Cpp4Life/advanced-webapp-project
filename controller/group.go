@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"advanced-webapp-project/helper"
 	"advanced-webapp-project/model"
 	"advanced-webapp-project/service"
+	"advanced-webapp-project/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -14,16 +14,17 @@ type IGroupController interface {
 	GetCreatedGroupsByUserId(c *gin.Context)
 	GetJoinedGroupsByUserId(c *gin.Context)
 	GetGroupMemberDetailsByGroupId(c *gin.Context)
+	GetGroupById(c *gin.Context)
 }
 
 type groupController struct {
-	logger       *helper.Logger
+	logger       *utils.Logger
 	jwtService   service.IJWTService
 	groupService service.IGroupService
 	userService  service.IUserService
 }
 
-func NewGroupController(logger *helper.Logger, jwtSvc service.IJWTService, groupSvc service.IGroupService, userSvc service.IUserService) *groupController {
+func NewGroupController(logger *utils.Logger, jwtSvc service.IJWTService, groupSvc service.IGroupService, userSvc service.IUserService) *groupController {
 	return &groupController{
 		logger:       logger,
 		jwtService:   jwtSvc,
@@ -121,6 +122,22 @@ func (g *groupController) GetGroupMemberDetailsByGroupId(c *gin.Context) {
 
 	c.JSON(http.StatusOK, map[string]any{
 		"groups_data": groups,
+	})
+
+	return
+}
+
+func (g *groupController) GetGroupById(c *gin.Context) {
+	groupId := c.Param("id")
+	group, err := g.groupService.GetGroupById(groupId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, map[string]any{"message": "no group found!"})
+		g.logger.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]any{
+		"group_data": group,
 	})
 
 	return

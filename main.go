@@ -3,19 +3,22 @@ package main
 import (
 	"advanced-webapp-project/controller"
 	"advanced-webapp-project/db"
-	"advanced-webapp-project/helper"
+	_ "advanced-webapp-project/docs"
 	"advanced-webapp-project/middleware"
 	"advanced-webapp-project/repository"
 	"advanced-webapp-project/service"
+	"advanced-webapp-project/utils"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 const PORT = ":7777"
 
 var (
 	sqlDB  = db.NewSQLDB()
-	logger = helper.NewLogger()
+	logger = utils.NewLogger()
 
 	userRepo  = repository.NewUserRepo(sqlDB)
 	groupRepo = repository.NewGroupRepo(sqlDB)
@@ -30,6 +33,9 @@ var (
 	groupController = controller.NewGroupController(logger, jwtService, groupService, userService)
 )
 
+// @securityDefinitions.apikey Token
+// @in header
+// @name Authorization
 func main() {
 	defer db.Close(sqlDB)
 	r := gin.Default()
@@ -41,7 +47,7 @@ func main() {
 		authRoutes.POST("/register", authController.Register)
 	}
 
-	userRoutes := r.Group("accounts").Use(middleware.AuthorizeJWT(jwtService, logger))
+	userRoutes := r.Group("/accounts").Use(middleware.AuthorizeJWT(jwtService, logger))
 	{
 		userRoutes.GET("/profile", userController.GetProfile)
 		userRoutes.POST("/edit", userController.UpdateProfile)
@@ -53,8 +59,10 @@ func main() {
 	groupRoutes := r.Group("/group")
 	{
 		groupRoutes.GET("/get-all", groupController.GetAllGroups)
-		groupRoutes.GET("/:id/details", groupController.GetGroupMemberDetailsByGroupId)
+		groupRoutes.GET("/:id/general", middleware.AuthorizeJWT(jwtService, logger), groupController.GetGroupById)
+		groupRoutes.GET("/:id/details", middleware.AuthorizeJWT(jwtService, logger), groupController.GetGroupMemberDetailsByGroupId)
 	}
 
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	_ = r.Run(PORT)
 }

@@ -1,0 +1,52 @@
+definitions:
+  model.User:
+    properties:
+      address:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+      profile_img:
+        type: string
+      updated_at:
+        type: string
+      user_tel:
+        type: string
+      username:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /accounts/profile:
+    get:
+      consumes:
+      - application/json
+      description: Get user profile after login
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "404":
+          description: Not Found
+      security:
+      - Token: []
+      summary: Get profile
+      tags:
+      - accounts
+securityDefinitions:
+  Token:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

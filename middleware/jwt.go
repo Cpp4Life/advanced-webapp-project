@@ -1,13 +1,13 @@
 package middleware
 
 import (
-	"advanced-webapp-project/helper"
 	"advanced-webapp-project/service"
+	"advanced-webapp-project/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func AuthorizeJWT(svc service.IJWTService, logger *helper.Logger) gin.HandlerFunc {
+func AuthorizeJWT(svc service.IJWTService, logger *utils.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		header := c.GetHeader("Authorization")
 

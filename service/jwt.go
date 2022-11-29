@@ -1,7 +1,7 @@
 package service
 
 import (
-	"advanced-webapp-project/helper"
+	"advanced-webapp-project/utils"
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/joho/godotenv"
@@ -25,10 +25,10 @@ type jwtCustomClaims struct {
 type jwtService struct {
 	secretKey string
 	issuer    string
-	logger    *helper.Logger
+	logger    *utils.Logger
 }
 
-func NewJWTService(logger *helper.Logger) *jwtService {
+func NewJWTService(logger *utils.Logger) *jwtService {
 	return &jwtService{
 		secretKey: getSecretKey(),
 		issuer:    "2022-19-11-19KTPM3-Advanced-Web-App",

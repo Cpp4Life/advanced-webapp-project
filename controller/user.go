@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"advanced-webapp-project/helper"
 	"advanced-webapp-project/model"
 	"advanced-webapp-project/service"
+	"advanced-webapp-project/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -14,13 +14,13 @@ type IUserController interface {
 }
 
 type userController struct {
-	logger       *helper.Logger
+	logger       *utils.Logger
 	jwtService   service.IJWTService
 	userService  service.IUserService
 	groupService service.IGroupService
 }
 
-func NewUserController(logger *helper.Logger, jwtSvc service.IJWTService, userSvc service.IUserService, groupSvc service.IGroupService) *userController {
+func NewUserController(logger *utils.Logger, jwtSvc service.IJWTService, userSvc service.IUserService, groupSvc service.IGroupService) *userController {
 	return &userController{
 		logger:       logger,
 		jwtService:   jwtSvc,
@@ -29,6 +29,16 @@ func NewUserController(logger *helper.Logger, jwtSvc service.IJWTService, userSv
 	}
 }
 
+// godoc
+// @Security Token
+// @Summary Get profile
+// @Description Get user profile after login
+// @Tags accounts
+// @Accept json
+// @Produce json
+// @Success 200 {object} model.User
+// @Failure 404
+// @Router /accounts/profile [get]
 func (u *userController) GetProfile(c *gin.Context) {
 	userId := u.getUserId(c.GetHeader("Authorization"))
 	user, err := u.userService.GetProfile(userId)
