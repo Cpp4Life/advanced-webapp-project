@@ -15,6 +15,7 @@ type IGroupRepo interface {
 	FindJoinedGroupsByUserId(userId string) ([]*model.GroupUser, error)
 	FindGroupMemberDetailsByGroupId(groupId string) ([]*model.GroupUser, error)
 	FindGroupById(groupId string) (*model.Group, error)
+	UpdateUserRole(groupId, userId, role string) (int64, error)
 }
 
 type groupRepo struct {
@@ -206,4 +207,16 @@ func (db *groupRepo) FindGroupById(groupId string) (*model.Group, error) {
 
 	group.Owner = &user
 	return &group, nil
+}
+
+func (db *groupRepo) UpdateUserRole(groupId, userId, role string) (int64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	updateResult, err := db.conn.ExecContext(ctx, stmtUpdateUserRole, role, groupId, userId)
+	if err != nil {
+		return -1, err
+	}
+
+	return updateResult.LastInsertId()
 }

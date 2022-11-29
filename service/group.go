@@ -12,6 +12,7 @@ type IGroupService interface {
 	GetJoinedGroupsByUserId(userId string) ([]*model.GroupUser, error)
 	GetGroupMemberDetailsByGroupId(groupId string) ([]*model.GroupUser, error)
 	GetGroupById(groupId string) (*model.Group, error)
+	UpdateUserRole(groupId, userId, role string) (int64, error)
 }
 
 type groupService struct {
@@ -46,4 +47,8 @@ func (svc *groupService) GetGroupMemberDetailsByGroupId(groupId string) ([]*mode
 
 func (svc *groupService) GetGroupById(groupId string) (*model.Group, error) {
 	return svc.groupRepo.FindGroupById(groupId)
+}
+
+func (svc *groupService) UpdateUserRole(groupId, userId, role string) (int64, error) {
+	return svc.groupRepo.UpdateUserRole(groupId, userId, role)
 }

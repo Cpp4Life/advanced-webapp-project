@@ -15,6 +15,7 @@ type IGroupController interface {
 	GetJoinedGroupsByUserId(c *gin.Context)
 	GetGroupMemberDetailsByGroupId(c *gin.Context)
 	GetGroupById(c *gin.Context)
+	UpdateUserRole(c *gin.Context)
 }
 
 type groupController struct {
@@ -140,6 +141,33 @@ func (g *groupController) GetGroupById(c *gin.Context) {
 		"group_data": group,
 	})
 
+	return
+}
+
+func (g *groupController) UpdateUserRole(c *gin.Context) {
+	groupId := c.Param("id")
+	userId := c.Query("userId")
+	role := c.Query("role")
+
+	if _, err := g.userService.GetProfile(userId); err != nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, map[string]any{"message": "user not found"})
+		g.logger.Error(err.Error())
+		return
+	}
+
+	if _, err := g.groupService.GetGroupById(groupId); err != nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, map[string]any{"message": "group not found"})
+		g.logger.Error(err.Error())
+		return
+	}
+
+	if _, err := g.groupService.UpdateUserRole(groupId, userId, role); err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "failed to assign role"})
+		g.logger.Error(err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]any{"message": "successfully updated"})
 	return
 }
 

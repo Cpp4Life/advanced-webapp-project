@@ -50,4 +50,8 @@ const (
 		"JOIN `users` u ON group_members.member_id = u.id " +
 		"JOIN `roles` r ON group_members.role = r.id " +
 		"WHERE `group_id` = ?;"
+
+	stmtUpdateUserRole = "UPDATE `group_members` " +
+		"SET role = ? " +
+		"WHERE group_id = ? AND member_id = ? "
 )
