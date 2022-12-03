@@ -131,8 +131,7 @@ func (ctl *authController) VerifyEmail(c *gin.Context) {
 	}
 
 	if result == 0 {
-		c.AbortWithStatusJSON(http.StatusNotFound, map[string]any{"message": "invalid verification code!"})
-		ctl.logger.Error(err.Error())
+		c.AbortWithStatusJSON(http.StatusConflict, map[string]any{"message": "account already verified"})
 		return
 	}
 
