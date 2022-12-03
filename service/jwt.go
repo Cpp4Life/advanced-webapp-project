@@ -1,11 +1,10 @@
 package service
 
 import (
+	"advanced-webapp-project/config"
 	"advanced-webapp-project/utils"
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/joho/godotenv"
-	"log"
 	"os"
 	"time"
 )
@@ -37,10 +36,8 @@ func NewJWTService(logger *utils.Logger) *jwtService {
 }
 
 func getSecretKey() string {
-	if err := godotenv.Load(".env"); err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	secretKey := os.Getenv("SECRET_KEY")
+	appConfig, _ := config.LoadConfig(".")
+	secretKey := appConfig.SecretKey
 	if secretKey == "" {
 		secretKey = "Golang"
 	}

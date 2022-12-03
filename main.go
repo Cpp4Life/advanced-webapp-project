@@ -24,11 +24,12 @@ var (
 	groupRepo = repository.NewGroupRepo(sqlDB)
 
 	jwtService   = service.NewJWTService(logger)
+	mailService  = service.NewMailerService(logger)
 	authService  = service.NewAuthService(userRepo)
 	userService  = service.NewUserService(userRepo)
 	groupService = service.NewGroupService(groupRepo)
 
-	authController  = controller.NewAuthHandler(logger, jwtService, authService)
+	authController  = controller.NewAuthHandler(logger, jwtService, authService, mailService)
 	userController  = controller.NewUserController(logger, jwtService, userService, groupService)
 	groupController = controller.NewGroupController(logger, jwtService, groupService, userService)
 )
@@ -45,6 +46,7 @@ func main() {
 	{
 		authRoutes.POST("/login", authController.Login)
 		authRoutes.POST("/register", authController.Register)
+		authRoutes.GET("/verify-email/:code", authController.VerifyEmail)
 	}
 
 	userRoutes := r.Group("/accounts").Use(middleware.AuthorizeJWT(jwtService, logger))

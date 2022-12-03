@@ -6,8 +6,8 @@ const (
 	dbTimeout = 5 * time.Second
 
 	stmtInsertUser = "INSERT INTO `users` " +
-		"(username, password, full_name, address, profile_img, user_tel, email, created_at, updated_at) " +
-		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);"
+		"(username, password, full_name, address, profile_img, user_tel, email, is_verified, verification_code, created_at, updated_at) " +
+		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 
 	stmtSelectUserByEmail = "SELECT id, full_name, username, password, address, profile_img, email, created_at, updated_at " +
 		"FROM `users` " +
@@ -16,6 +16,14 @@ const (
 	stmtSelectUserById = "SELECT id, full_name, username, password, address, profile_img, email, created_at, updated_at " +
 		"FROM `users` " +
 		"WHERE id = ?;"
+
+	stmtSelectVerifiedStatusByEmail = "SELECT is_verified " +
+		"FROM `users` " +
+		"WHERE email LIKE ?;"
+
+	stmtUpdateVerifiedStatus = "UPDATE `users` " +
+		"SET is_verified = true " +
+		"WHERE verification_code LIKE ?;"
 
 	stmtUpdateUserById = "UPDATE `users` " +
 		"SET full_name = ?, username = ?, profile_img = ?, updated_at = ? " +

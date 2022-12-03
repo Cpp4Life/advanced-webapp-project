@@ -1,9 +1,11 @@
 package db
 
 import (
+	"advanced-webapp-project/config"
+	"context"
 	"database/sql"
 	"fmt"
-	"github.com/joho/godotenv"
+	"google.golang.org/appengine/log"
 	"os"
 	"time"
 
@@ -15,16 +17,18 @@ func NewSQLDB() *sql.DB {
 }
 
 func getSourceString() string {
-	if err := godotenv.Load(".env"); err != nil {
-		panic("Error loading .env file")
+	appConfig, err := config.LoadConfig(".")
+	if err != nil {
+		log.Debugf(context.Background(), "%+v", err)
+		os.Exit(1)
 	}
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASS"),
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_NAME"),
+		appConfig.DBUser,
+		appConfig.DBPass,
+		appConfig.DBHost,
+		appConfig.DBPort,
+		appConfig.DBName,
 	)
 
 	return dsn

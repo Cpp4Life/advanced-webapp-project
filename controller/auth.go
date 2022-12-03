@@ -6,6 +6,7 @@ import (
 	"advanced-webapp-project/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/thanhpk/randstr"
 	"net/http"
 	"strconv"
 )
@@ -13,19 +14,22 @@ import (
 type IAuthController interface {
 	Login(c *gin.Context)
 	Register(c *gin.Context)
+	VerifyEmail(c *gin.Context)
 }
 
 type authController struct {
 	logger      *utils.Logger
 	jwtService  service.IJWTService
 	authService service.IAuthService
+	mailService service.IMailerService
 }
 
-func NewAuthHandler(logger *utils.Logger, jwtSvc service.IJWTService, authSvc service.IAuthService) *authController {
+func NewAuthHandler(logger *utils.Logger, jwtSvc service.IJWTService, authSvc service.IAuthService, mailSvc service.IMailerService) *authController {
 	return &authController{
 		logger:      logger,
 		jwtService:  jwtSvc,
 		authService: authSvc,
+		mailService: mailSvc,
 	}
 }
 
@@ -40,8 +44,20 @@ func (ctl *authController) Login(c *gin.Context) {
 
 	userData, err := ctl.authService.VerifyCredential(user.Email, user.Password)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]any{"message": "invalid credentials!"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]any{"message": "account not found!"})
 		ctl.logger.Error(err.Error())
+		return
+	}
+
+	isVerified, err := ctl.authService.GetVerifiedStatusByEmail(user.Email)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "account not found!"})
+		ctl.logger.Error(err.Error())
+		return
+	}
+
+	if !isVerified {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]any{"message": "please verify your email first!"})
 		return
 	}
 
@@ -74,6 +90,10 @@ func (ctl *authController) Register(c *gin.Context) {
 		return
 	}
 
+	code := randstr.String(20)
+	verificationCode := utils.Encode(code)
+	user.VerificationCode = verificationCode
+
 	// Create user to db
 	_, err := ctl.authService.CreateUser(&user)
 	if err != nil {
@@ -82,10 +102,39 @@ func (ctl *authController) Register(c *gin.Context) {
 		return
 	}
 
-	ctl.logger.Warn(user)
+	email := service.Message{
+		URL:      "http://localhost:7777/api/auth/verify-email/" + code,
+		FullName: user.FullName,
+		Subject:  "Your account verification code",
+	}
+
+	go func(user *model.User, email *service.Message) {
+		ctl.mailService.SendMail(user, email)
+	}(&user, &email)
+
 	c.JSON(http.StatusCreated, map[string]any{
-		"user": user,
+		"message": "We sent an email with a verification code to " + user.Email,
 	})
 
 	return
+}
+
+func (ctl *authController) VerifyEmail(c *gin.Context) {
+	code := c.Param("code")
+	verificationCode := utils.Encode(code)
+
+	result, err := ctl.authService.UpdateVerifiedStatus(verificationCode)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "failed to verify account!"})
+		ctl.logger.Error(err.Error())
+		return
+	}
+
+	if result == 0 {
+		c.AbortWithStatusJSON(http.StatusNotFound, map[string]any{"message": "invalid verification code!"})
+		ctl.logger.Error(err.Error())
+		return
+	}
+
+	c.Redirect(http.StatusPermanentRedirect, "http://localhost:3000/login?redirect=")
 }

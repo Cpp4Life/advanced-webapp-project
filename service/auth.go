@@ -9,6 +9,8 @@ type IAuthService interface {
 	CreateUser(user *model.User) (int64, error)
 	GetUserByEmail(email string) (*model.User, error)
 	VerifyCredential(email, password string) (*model.User, error)
+	GetVerifiedStatusByEmail(email string) (bool, error)
+	UpdateVerifiedStatus(verificationCode string) (int64, error)
 }
 
 type authService struct {
@@ -31,4 +33,12 @@ func (svc *authService) GetUserByEmail(email string) (*model.User, error) {
 
 func (svc *authService) VerifyCredential(email, password string) (*model.User, error) {
 	return svc.userRepo.VerifyCredential(email, password)
+}
+
+func (svc *authService) GetVerifiedStatusByEmail(email string) (bool, error) {
+	return svc.userRepo.FindVerifiedStatusByEmail(email)
+}
+
+func (svc *authService) UpdateVerifiedStatus(verificationCode string) (int64, error) {
+	return svc.userRepo.UpdateVerifiedStatus(verificationCode)
 }

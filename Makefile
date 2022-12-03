@@ -3,3 +3,6 @@ start-swagger:
 
 delete-swagger:
 	rm -rf ./docs
+
+run:
+	go run main.go

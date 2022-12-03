@@ -11,6 +11,8 @@ import (
 type IUserRepo interface {
 	InsertUser(user *model.User) (int64, error)
 	FindUserByEmail(email string) (*model.User, error)
+	FindVerifiedStatusByEmail(email string) (bool, error)
+	UpdateVerifiedStatus(verificationCode string) (int64, error)
 	VerifyCredential(email, password string) (*model.User, error)
 	FindUserById(id string) (*model.User, error)
 	ModifyUserById(id string, user model.User) (int64, error)
@@ -45,6 +47,8 @@ func (db *userRepo) InsertUser(user *model.User) (int64, error) {
 		user.ProfileImg,
 		user.UserTel,
 		user.Email,
+		false,
+		user.VerificationCode,
 		time.Now(),
 		time.Now(),
 	)
@@ -82,6 +86,31 @@ func (db *userRepo) FindUserByEmail(email string) (*model.User, error) {
 	}
 
 	return &user, nil
+}
+
+func (db *userRepo) FindVerifiedStatusByEmail(email string) (bool, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	var isVerified bool
+	err := db.conn.QueryRowContext(ctx, stmtSelectVerifiedStatusByEmail, email).Scan(&isVerified)
+	if err != nil {
+		return false, err
+	}
+
+	return isVerified, nil
+}
+
+func (db *userRepo) UpdateVerifiedStatus(verificationCode string) (int64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	result, err := db.conn.ExecContext(ctx, stmtUpdateVerifiedStatus, verificationCode)
+	if err != nil {
+		return 0, err
+	}
+
+	return result.RowsAffected()
 }
 
 func (db *userRepo) VerifyCredential(email, password string) (*model.User, error) {

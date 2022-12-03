@@ -10,6 +10,8 @@ CREATE TABLE `users`
     `address`     VARCHAR(250) DEFAULT '',
     `profile_img` VARCHAR(250) DEFAULT '',
     `user_tel`    VARCHAR(13)  DEFAULT '',
+    `is_verified` BOOLEAN DEFAULT FALSE NOT NULL,
+    `verification_code` VARCHAR(50) DEFAULT '',
     `created_at`  DATETIME,
     `updated_at`  DATETIME
 ) DEFAULT CHARSET = utf8mb4;
