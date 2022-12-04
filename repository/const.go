@@ -62,4 +62,19 @@ const (
 	stmtUpdateUserRole = "UPDATE `group_members` " +
 		"SET role = ? " +
 		"WHERE group_id = ? AND member_id = ? "
+
+	stmtSelectPresentationById = "SELECT id, name, owner, modified_at, created_at " +
+		"FROM `presentations` WHERE id = ?; "
+
+	stmtSelectAllPresentations = "SELECT id, name, owner, modified_at, created_at FROM `presentations`; "
+
+	stmtInsertPresentation = "INSERT INTO `presentations` " +
+		"(name, owner, modified_at, created_at) " +
+		"VALUES (?, ?, ?, ?);"
+
+	stmtUpdatePresentation = "UPDATE `presentations` " +
+		"SET name = ?, modified_at = ? " +
+		"WHERE id = ?; "
+
+	stmtDeletePresentation = "DELETE FROM `presentations` WHERE id = ?;"
 )

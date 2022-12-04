@@ -22,16 +22,19 @@ var (
 
 	userRepo  = repository.NewUserRepo(sqlDB)
 	groupRepo = repository.NewGroupRepo(sqlDB)
+	presRepo  = repository.NewPresRepo(sqlDB)
 
 	jwtService   = service.NewJWTService(logger)
 	mailService  = service.NewMailerService(logger)
 	authService  = service.NewAuthService(userRepo)
 	userService  = service.NewUserService(userRepo)
 	groupService = service.NewGroupService(groupRepo)
+	presService  = service.NewPresService(presRepo)
 
 	authController  = controller.NewAuthHandler(logger, jwtService, authService, mailService)
 	userController  = controller.NewUserController(logger, jwtService, userService, groupService)
 	groupController = controller.NewGroupController(logger, jwtService, groupService, userService)
+	presController  = controller.NewPresController(logger, jwtService, presService, userService)
 )
 
 // @securityDefinitions.apikey Token
@@ -52,7 +55,7 @@ func main() {
 	userRoutes := r.Group("/accounts").Use(middleware.AuthorizeJWT(jwtService, logger))
 	{
 		userRoutes.GET("/profile", userController.GetProfile)
-		userRoutes.POST("/edit", userController.UpdateProfile)
+		userRoutes.PUT("/edit", userController.UpdateProfile)
 		userRoutes.POST("/create-group", groupController.CreateGroup)
 		userRoutes.GET("/manage-groups", groupController.GetCreatedGroupsByUserId)
 		userRoutes.GET("/joined-groups", groupController.GetJoinedGroupsByUserId)
@@ -64,6 +67,15 @@ func main() {
 		groupRoutes.GET("/:id/general", middleware.AuthorizeJWT(jwtService, logger), groupController.GetGroupById)
 		groupRoutes.GET("/:id/details", middleware.AuthorizeJWT(jwtService, logger), groupController.GetGroupMemberDetailsByGroupId)
 		groupRoutes.POST("/:id/edit", middleware.AuthorizeJWT(jwtService, logger), groupController.UpdateUserRole)
+	}
+
+	presRoutes := r.Group("/presentation").Use(middleware.AuthorizeJWT(jwtService, logger))
+	{
+		presRoutes.GET("/:id/general", presController.GetPresentationById)
+		presRoutes.GET("/get-all", presController.GetAllPresentations)
+		presRoutes.POST("/create", presController.CreatePresentation)
+		presRoutes.PUT("/:id/edit", presController.UpdatePresentation)
+		presRoutes.DELETE("/delete/:id", presController.DeletePresentation)
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

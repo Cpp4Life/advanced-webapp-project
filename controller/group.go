@@ -57,8 +57,7 @@ func (g *groupController) CreateGroup(c *gin.Context) {
 		return
 	}
 
-	claims, _ := g.jwtService.ExtractToken(c.GetHeader("Authorization"))
-	userId := claims["user_id"].(string)
+	userId := g.getUserId(c.GetHeader("Authorization"))
 	userData, err := g.userService.GetProfile(userId)
 
 	if err != nil {

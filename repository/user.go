@@ -107,7 +107,7 @@ func (db *userRepo) UpdateVerifiedStatus(verificationCode string) (int64, error)
 
 	result, err := db.conn.ExecContext(ctx, stmtUpdateVerifiedStatus, verificationCode)
 	if err != nil {
-		return 0, err
+		return -1, err
 	}
 
 	return result.RowsAffected()
@@ -166,5 +166,5 @@ func (db *userRepo) ModifyUserById(id string, user model.User) (int64, error) {
 		return -1, err
 	}
 
-	return updateResult.LastInsertId()
+	return updateResult.RowsAffected()
 }
