@@ -77,4 +77,16 @@ const (
 		"WHERE id = ?; "
 
 	stmtDeletePresentation = "DELETE FROM `presentations` WHERE id = ?;"
+
+	stmtInsertSlide = "INSERT INTO `slides` " +
+		"(pres_id, slide_type) " +
+		"VALUES (?, ?);"
+
+	stmtInsertContent = "INSERT INTO `contents` " +
+		"(slide_id, title, meta) " +
+		"VALUES (?, ?, ?);"
+
+	stmtInsertOption = "INSERT INTO `options` " +
+		"(name, image, content_id) " +
+		"VALUES (?, ?, ?);"
 )
