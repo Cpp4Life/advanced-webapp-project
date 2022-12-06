@@ -3,7 +3,7 @@ package model
 type Slide struct {
 	Id             uint     `json:"id,omitempty"`
 	PresentationId uint     `json:"presentation_id,omitempty"`
-	Type           uint     `json:"type,omitempty" binding:"required"`
+	Type           uint     `json:"type,omitempty"`
 	Content        *Content `json:"content,omitempty"`
 }
 

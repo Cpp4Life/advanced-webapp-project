@@ -3,7 +3,7 @@ package repository
 import "time"
 
 const (
-	dbTimeout = 5 * time.Second
+	dbTimeout = 10 * time.Second
 
 	stmtInsertUser = "INSERT INTO `users` " +
 		"(username, password, full_name, address, profile_img, user_tel, email, is_verified, verification_code, created_at, updated_at) " +
@@ -89,4 +89,16 @@ const (
 	stmtInsertOption = "INSERT INTO `options` " +
 		"(name, image, content_id) " +
 		"VALUES (?, ?, ?);"
+
+	stmtUpdateSlide = "UPDATE `slides` " +
+		"SET slide_type = ? " +
+		"WHERE pres_id = ? AND id = ?;"
+
+	stmtUpdateContent = "UPDATE `contents` " +
+		"SET title = ?, meta = ? " +
+		"WHERE slide_id = ?;"
+
+	stmtUpdateOption = "UPDATE `options` " +
+		"SET name = ?, image = ? " +
+		"WHERE content_id = ? AND id = ?;"
 )

@@ -4,15 +4,13 @@ import (
 	"advanced-webapp-project/model"
 	"advanced-webapp-project/service"
 	"advanced-webapp-project/utils"
-	"encoding/json"
 	"github.com/gin-gonic/gin"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 )
 
 type ISlideController interface {
-	GetSlideById(c *gin.Context)
+	GetAllSlides(c *gin.Context)
 	CreateSlide(c *gin.Context)
 	UpdateSlide(c *gin.Context)
 	DeleteSlide(c *gin.Context)
@@ -30,29 +28,20 @@ func NewSlideController(logger *utils.Logger, slideSvc service.ISlideService) *s
 	}
 }
 
-func (s *slideController) GetSlideById(c *gin.Context) {}
+func (s *slideController) GetAllSlides(c *gin.Context) {}
 
 func (s *slideController) CreateSlide(c *gin.Context) {
 	presId := c.Param("id")
-	slideType := c.Query("type")
 
-	s.logger.Warn(presId, slideType)
-
-	jsonData, err := ioutil.ReadAll(c.Request.Body)
-	if err != nil {
+	var slide model.Slide
+	if err := c.ShouldBindJSON(&slide); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": err.Error()})
 		s.logger.Error(err.Error())
 		return
 	}
 
-	var slide model.Slide
-	json.Unmarshal(jsonData, &slide)
-
 	presIdUint, _ := strconv.ParseUint(presId, 10, 64)
-	slideTypeUint, _ := strconv.ParseUint(slideType, 10, 64)
-
 	slide.PresentationId = uint(presIdUint)
-	slide.Type = uint(slideTypeUint)
 
 	slideId, err := s.slideService.CreateSlide(&slide)
 	if err != nil {
@@ -84,6 +73,45 @@ func (s *slideController) CreateSlide(c *gin.Context) {
 	})
 }
 
-func (s *slideController) UpdateSlide(c *gin.Context) {}
+func (s *slideController) UpdateSlide(c *gin.Context) {
+	presId := c.Param("id")
+	slideId := c.Param("slide_id")
+	contentId := c.Query("content_id")
+
+	var slide model.Slide
+	if err := c.ShouldBindJSON(&slide); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": err.Error()})
+		s.logger.Error(err.Error())
+		return
+	}
+
+	slideIdUint, _ := strconv.ParseUint(slideId, 10, 64)
+	slide.Id = uint(slideIdUint)
+
+	_, err := s.slideService.UpdateSlide(presId, slide)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "failed to update slide"})
+		s.logger.Error(err.Error())
+		return
+	}
+
+	_, err = s.slideService.UpdateContent(slideId, *slide.Content)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "failed to update content"})
+		s.logger.Error(err.Error())
+		return
+	}
+
+	_, err = s.slideService.UpdateOptions(contentId, slide.Content.Options)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "failed to update options"})
+		s.logger.Error(err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]any{
+		"message": "updated successfully",
+	})
+}
 
 func (s *slideController) DeleteSlide(c *gin.Context) {}
