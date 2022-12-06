@@ -28,7 +28,20 @@ func NewSlideController(logger *utils.Logger, slideSvc service.ISlideService) *s
 	}
 }
 
-func (s *slideController) GetAllSlides(c *gin.Context) {}
+func (s *slideController) GetAllSlides(c *gin.Context) {
+	presId := c.Param("id")
+
+	slides, err := s.slideService.GetAllSlides(presId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "slides not found!"})
+		s.logger.Error(err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]any{
+		"slides": slides,
+	})
+}
 
 func (s *slideController) CreateSlide(c *gin.Context) {
 	presId := c.Param("id")

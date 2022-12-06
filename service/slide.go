@@ -6,7 +6,7 @@ import (
 )
 
 type ISlideService interface {
-	GetAllSlides(presId string)
+	GetAllSlides(presId string) ([]*model.Slide, error)
 	CreateSlide(slide *model.Slide) (int64, error)
 	CreateContent(slideId string, content *model.Content) (int64, error)
 	CreateOption(contentId string, options []*model.Option) (int64, error)
@@ -26,8 +26,8 @@ func NewSlideService(slideRepo repository.ISlideRepo) *slideService {
 	}
 }
 
-func (svc *slideService) GetAllSlides(presId string) {
-
+func (svc *slideService) GetAllSlides(presId string) ([]*model.Slide, error) {
+	return svc.slideRepo.FindAll(presId)
 }
 
 func (svc *slideService) CreateSlide(slide *model.Slide) (int64, error) {

@@ -7,7 +7,7 @@ import (
 )
 
 type ISlideRepo interface {
-	FindSlideById()
+	FindAll(presId string) ([]*model.Slide, error)
 	InsertSlide(slide *model.Slide) (int64, error)
 	InsertContent(slideId string, content *model.Content) (int64, error)
 	InsertOption(contentId string, options []*model.Option) (int64, error)
@@ -27,7 +27,49 @@ func NewSlideRepo(sqldb *sql.DB) *slideRepo {
 	}
 }
 
-func (db *slideRepo) FindSlideById() {}
+func (db *slideRepo) FindAll(presId string) ([]*model.Slide, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	rows, err := db.conn.QueryContext(ctx, stmtSelectAllSlides, presId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var slides []*model.Slide
+	for rows.Next() {
+		var slide model.Slide
+		var content model.Content
+		var option model.Option
+		var index = len(slides) - 1
+		if err = rows.Scan(
+			&slide.Id,
+			&slide.Type,
+			&content.Id,
+			&content.Title,
+			&content.Meta,
+			&option.Id,
+			&option.Name,
+			&option.Image,
+		); err != nil {
+			return nil, err
+		}
+
+		content.Options = append(content.Options, &option)
+		slide.Content = &content
+
+		if len(slides) == 0 {
+			slides = append(slides, &slide)
+		} else if slides[index].Id == slide.Id {
+			slides[index].Content.Options = append(slides[index].Content.Options, &option)
+		} else {
+			slides = append(slides, &slide)
+		}
+	}
+
+	return slides, nil
+}
 
 func (db *slideRepo) InsertSlide(slide *model.Slide) (int64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)

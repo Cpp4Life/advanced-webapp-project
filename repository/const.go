@@ -101,4 +101,10 @@ const (
 	stmtUpdateOption = "UPDATE `options` " +
 		"SET name = ?, image = ? " +
 		"WHERE content_id = ? AND id = ?;"
+
+	stmtSelectAllSlides = "SELECT s.id, s.slide_type, c.id, c.title, c.meta, o.id, o.name, o.image " +
+		"FROM `slides` s " +
+		"JOIN `contents` c on s.id = c.slide_id " +
+		"JOIN `options` o on c.id = o.content_id " +
+		"WHERE s.pres_id = ?;"
 )
