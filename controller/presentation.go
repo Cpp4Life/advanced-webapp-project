@@ -6,6 +6,7 @@ import (
 	"advanced-webapp-project/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 type IPresController interface {
@@ -72,8 +73,10 @@ func (p *presController) CreatePresentation(c *gin.Context) {
 		return
 	}
 
-	insertedId, err := p.presService.CreatePresentation(&pres, userId)
-	pres.Id = uint(insertedId)
+	randomId := utils.GenerateRandomNumber(8)
+	presId, _ := strconv.ParseUint(randomId, 10, 64)
+	pres.Id = uint(presId)
+	err := p.presService.CreatePresentation(&pres, userId)
 
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "failed to create presentation"})

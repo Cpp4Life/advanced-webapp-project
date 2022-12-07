@@ -11,7 +11,7 @@ import (
 type IPresRepo interface {
 	FindPresentationById(presId string) (*model.Pres, error)
 	FindAllPresentations() ([]*model.Pres, error)
-	InsertPresentation(pres *model.Pres, userId string) (int64, error)
+	InsertPresentation(pres *model.Pres, userId string) error
 	UpdatePresentation(presId string, data model.Pres) (int64, error)
 	DeletePresentation(presId string) (int64, error)
 }
@@ -78,13 +78,14 @@ func (db *presRepo) FindAllPresentations() ([]*model.Pres, error) {
 	return presList, nil
 }
 
-func (db *presRepo) InsertPresentation(pres *model.Pres, userId string) (int64, error) {
+func (db *presRepo) InsertPresentation(pres *model.Pres, userId string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
 	pres.ModifiedAt = time.Now()
 	pres.CreatedAt = time.Now()
-	result, err := db.conn.ExecContext(ctx, stmtInsertPresentation,
+	_, err := db.conn.ExecContext(ctx, stmtInsertPresentation,
+		pres.Id,
 		pres.Name,
 		userId,
 		pres.ModifiedAt,
@@ -92,10 +93,10 @@ func (db *presRepo) InsertPresentation(pres *model.Pres, userId string) (int64, 
 	)
 
 	if err != nil {
-		return -1, err
+		return err
 	}
 
-	return result.LastInsertId()
+	return nil
 }
 
 func (db *presRepo) UpdatePresentation(presId string, data model.Pres) (int64, error) {
