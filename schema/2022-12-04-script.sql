@@ -37,10 +37,11 @@ CREATE TABLE `contents`
 
 CREATE TABLE `options`
 (
-    `id`         BIGINT AUTO_INCREMENT PRIMARY KEY,
-    `name`       VARCHAR(150) NOT NULL,
-    `image`      VARCHAR(250) DEFAULT '',
-    `content_id` BIGINT
+    `id`          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `name`        VARCHAR(150) NOT NULL,
+    `image`       VARCHAR(250) DEFAULT '',
+    `content_id`  BIGINT,
+    `total_votes` INT          DEFAULT 0
 ) DEFAULT CHARSET = utf8mb4;
 
 ALTER TABLE `presentations`
@@ -60,9 +61,9 @@ ALTER TABLE `slides`
         );
 
 ALTER TABLE `contents`
-    ADD CONSTRAINT `contents_slides_id_fk` FOREIGN KEY (`slide_id`) REFERENCES `slides`(`id`)
+    ADD CONSTRAINT `contents_slides_id_fk` FOREIGN KEY (`slide_id`) REFERENCES `slides` (`id`)
         ON DELETE SET NULL;
 
 ALTER TABLE `options`
-    ADD CONSTRAINT `options_contents_id_fk` FOREIGN KEY (`content_id`) REFERENCES `contents`(`id`)
+    ADD CONSTRAINT `options_contents_id_fk` FOREIGN KEY (`content_id`) REFERENCES `contents` (`id`)
         ON DELETE SET NULL;

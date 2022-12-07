@@ -127,4 +127,23 @@ func (s *slideController) UpdateSlide(c *gin.Context) {
 	})
 }
 
-func (s *slideController) DeleteSlide(c *gin.Context) {}
+func (s *slideController) DeleteSlide(c *gin.Context) {
+	presId := c.Param("id")
+	slideId := c.Param("slide_id")
+
+	res, err := s.slideService.DeleteSlide(presId, slideId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "failed to delete slide"})
+		s.logger.Error(err.Error())
+		return
+	}
+
+	if res == 0 {
+		c.AbortWithStatusJSON(http.StatusConflict, map[string]any{"message": "slide already deleted"})
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]any{
+		"message": "deleted successfully",
+	})
+}

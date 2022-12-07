@@ -107,4 +107,6 @@ const (
 		"JOIN `contents` c on s.id = c.slide_id " +
 		"JOIN `options` o on c.id = o.content_id " +
 		"WHERE s.pres_id = ?;"
+
+	stmtDeleteSlideById = "DELETE FROM `slides` WHERE pres_id = ? AND id = ?;"
 )

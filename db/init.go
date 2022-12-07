@@ -39,9 +39,9 @@ func connect() *sql.DB {
 	if err != nil {
 		panic(err)
 	}
-	db.SetConnMaxLifetime(5 * time.Second)
-	db.SetMaxOpenConns(10)
-	db.SetMaxIdleConns(10)
+	db.SetConnMaxLifetime(5 * time.Minute)
+	db.SetMaxOpenConns(100)
+	db.SetMaxIdleConns(20)
 
 	return db
 }

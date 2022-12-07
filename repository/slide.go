@@ -14,7 +14,7 @@ type ISlideRepo interface {
 	UpdateSlide(presId string, slide model.Slide) (int64, error)
 	UpdateContent(slideId string, content model.Content) (int64, error)
 	UpdateOptions(contentId string, options []*model.Option) (int64, error)
-	DeleteSlide() (int64, error)
+	DeleteSlide(presId, slideId string) (int64, error)
 }
 
 type slideRepo struct {
@@ -147,6 +147,14 @@ func (db *slideRepo) UpdateOptions(contentId string, options []*model.Option) (i
 	return 0, nil
 }
 
-func (db *slideRepo) DeleteSlide() (int64, error) {
-	return -1, nil
+func (db *slideRepo) DeleteSlide(presId, slideId string) (int64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	res, err := db.conn.ExecContext(ctx, stmtDeleteSlideById, presId, slideId)
+	if err != nil {
+		return -1, nil
+	}
+
+	return res.RowsAffected()
 }
