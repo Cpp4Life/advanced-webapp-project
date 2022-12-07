@@ -45,6 +45,8 @@ func (s *slideController) GetAllSlides(c *gin.Context) {
 
 func (s *slideController) CreateSlide(c *gin.Context) {
 	presId := c.Param("id")
+	slideId := utils.GenerateRandomNumber(8)
+	contentId := utils.GenerateRandomNumber(8)
 
 	var slide model.Slide
 	if err := c.ShouldBindJSON(&slide); err != nil {
@@ -53,10 +55,10 @@ func (s *slideController) CreateSlide(c *gin.Context) {
 		return
 	}
 
-	presIdUint, _ := strconv.ParseUint(presId, 10, 64)
-	slide.PresentationId = uint(presIdUint)
+	slide.PresentationId = utils.Str2Uint(presId)
+	slide.Id = utils.Str2Uint(slideId)
 
-	slideId, err := s.slideService.CreateSlide(&slide)
+	err := s.slideService.CreateSlide(&slide)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": "failed to create slide"})
 		s.logger.Error(err.Error())
@@ -64,7 +66,8 @@ func (s *slideController) CreateSlide(c *gin.Context) {
 	}
 
 	content := slide.Content
-	contentId, err := s.slideService.CreateContent(strconv.FormatInt(slideId, 10), content)
+	content.Id = utils.Str2Uint(contentId)
+	err = s.slideService.CreateContent(slideId, content)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": "failed to create content"})
 		s.logger.Error(err.Error())
@@ -72,15 +75,13 @@ func (s *slideController) CreateSlide(c *gin.Context) {
 	}
 
 	options := content.Options
-	_, err = s.slideService.CreateOption(strconv.FormatInt(contentId, 10), options)
+	err = s.slideService.CreateOption(contentId, options)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": "failed to create options"})
 		s.logger.Error(err.Error())
 		return
 	}
 
-	slide.Id = uint(slideId)
-	slide.Content.Id = uint(contentId)
 	c.JSON(http.StatusCreated, map[string]any{
 		"data": slide,
 	})

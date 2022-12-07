@@ -7,10 +7,10 @@ import (
 )
 
 type ISlideRepo interface {
-	FindAll(presId string) ([]*model.Slide, error)
-	InsertSlide(slide *model.Slide) (int64, error)
-	InsertContent(slideId string, content *model.Content) (int64, error)
-	InsertOption(contentId string, options []*model.Option) (int64, error)
+	FindAllSlides(presId string) ([]*model.Slide, error)
+	InsertSlide(slide *model.Slide) error
+	InsertContent(slideId string, content *model.Content) error
+	InsertOption(contentId string, options []*model.Option) error
 	UpdateSlide(presId string, slide model.Slide) (int64, error)
 	UpdateContent(slideId string, content model.Content) (int64, error)
 	UpdateOptions(contentId string, options []*model.Option) (int64, error)
@@ -27,7 +27,7 @@ func NewSlideRepo(sqldb *sql.DB) *slideRepo {
 	}
 }
 
-func (db *slideRepo) FindAll(presId string) ([]*model.Slide, error) {
+func (db *slideRepo) FindAllSlides(presId string) ([]*model.Slide, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
@@ -52,6 +52,7 @@ func (db *slideRepo) FindAll(presId string) ([]*model.Slide, error) {
 			&option.Id,
 			&option.Name,
 			&option.Image,
+			&option.TotalVotes,
 		); err != nil {
 			return nil, err
 		}
@@ -71,42 +72,42 @@ func (db *slideRepo) FindAll(presId string) ([]*model.Slide, error) {
 	return slides, nil
 }
 
-func (db *slideRepo) InsertSlide(slide *model.Slide) (int64, error) {
+func (db *slideRepo) InsertSlide(slide *model.Slide) error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	result, err := db.conn.ExecContext(ctx, stmtInsertSlide, slide.PresentationId, slide.Type)
+	_, err := db.conn.ExecContext(ctx, stmtInsertSlide, slide.Id, slide.PresentationId, slide.Type)
 	if err != nil {
-		return -1, nil
+		return err
 	}
 
-	return result.LastInsertId()
+	return nil
 }
 
-func (db *slideRepo) InsertContent(slideId string, content *model.Content) (int64, error) {
+func (db *slideRepo) InsertContent(slideId string, content *model.Content) error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	result, err := db.conn.ExecContext(ctx, stmtInsertContent, slideId, content.Title, content.Meta)
+	_, err := db.conn.ExecContext(ctx, stmtInsertContent, content.Id, slideId, content.Title, content.Meta)
 	if err != nil {
-		return -1, nil
+		return err
 	}
 
-	return result.LastInsertId()
+	return nil
 }
 
-func (db *slideRepo) InsertOption(contentId string, options []*model.Option) (int64, error) {
+func (db *slideRepo) InsertOption(contentId string, options []*model.Option) error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
 	for _, option := range options {
 		_, err := db.conn.ExecContext(ctx, stmtInsertOption, option.Name, option.Image, contentId)
 		if err != nil {
-			return -1, nil
+			return err
 		}
 	}
 
-	return 0, nil
+	return nil
 }
 
 func (db *slideRepo) UpdateSlide(presId string, slide model.Slide) (int64, error) {
@@ -115,7 +116,7 @@ func (db *slideRepo) UpdateSlide(presId string, slide model.Slide) (int64, error
 
 	res, err := db.conn.ExecContext(ctx, stmtUpdateSlide, slide.Type, presId, slide.Id)
 	if err != nil {
-		return -1, nil
+		return -1, err
 	}
 
 	return res.RowsAffected()
@@ -127,7 +128,7 @@ func (db *slideRepo) UpdateContent(slideId string, content model.Content) (int64
 
 	res, err := db.conn.ExecContext(ctx, stmtUpdateContent, content.Title, content.Meta, slideId)
 	if err != nil {
-		return -1, nil
+		return -1, err
 	}
 
 	return res.RowsAffected()
@@ -140,7 +141,7 @@ func (db *slideRepo) UpdateOptions(contentId string, options []*model.Option) (i
 	for _, option := range options {
 		_, err := db.conn.ExecContext(ctx, stmtUpdateOption, option.Name, option.Image, contentId, option.Id)
 		if err != nil {
-			return -1, nil
+			return -1, err
 		}
 	}
 
@@ -153,7 +154,7 @@ func (db *slideRepo) DeleteSlide(presId, slideId string) (int64, error) {
 
 	res, err := db.conn.ExecContext(ctx, stmtDeleteSlideById, presId, slideId)
 	if err != nil {
-		return -1, nil
+		return -1, err
 	}
 
 	return res.RowsAffected()

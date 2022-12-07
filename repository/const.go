@@ -69,8 +69,8 @@ const (
 	stmtSelectAllPresentations = "SELECT id, name, owner, modified_at, created_at FROM `presentations`; "
 
 	stmtInsertPresentation = "INSERT INTO `presentations` " +
-		"(name, owner, modified_at, created_at) " +
-		"VALUES (?, ?, ?, ?);"
+		"(id, name, owner, modified_at, created_at) " +
+		"VALUES (?, ?, ?, ?, ?);"
 
 	stmtUpdatePresentation = "UPDATE `presentations` " +
 		"SET name = ?, modified_at = ? " +
@@ -79,12 +79,12 @@ const (
 	stmtDeletePresentation = "DELETE FROM `presentations` WHERE id = ?;"
 
 	stmtInsertSlide = "INSERT INTO `slides` " +
-		"(pres_id, slide_type) " +
-		"VALUES (?, ?);"
+		"(id, pres_id, slide_type) " +
+		"VALUES (?, ?, ?);"
 
 	stmtInsertContent = "INSERT INTO `contents` " +
-		"(slide_id, title, meta) " +
-		"VALUES (?, ?, ?);"
+		"(id, slide_id, title, meta) " +
+		"VALUES (?, ?, ?, ?);"
 
 	stmtInsertOption = "INSERT INTO `options` " +
 		"(name, image, content_id) " +
@@ -102,7 +102,7 @@ const (
 		"SET name = ?, image = ? " +
 		"WHERE content_id = ? AND id = ?;"
 
-	stmtSelectAllSlides = "SELECT s.id, s.slide_type, c.id, c.title, c.meta, o.id, o.name, o.image " +
+	stmtSelectAllSlides = "SELECT s.id, s.slide_type, c.id, c.title, c.meta, o.id, o.name, o.image, o.total_votes " +
 		"FROM `slides` s " +
 		"JOIN `contents` c on s.id = c.slide_id " +
 		"JOIN `options` o on c.id = o.content_id " +

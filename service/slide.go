@@ -7,9 +7,9 @@ import (
 
 type ISlideService interface {
 	GetAllSlides(presId string) ([]*model.Slide, error)
-	CreateSlide(slide *model.Slide) (int64, error)
-	CreateContent(slideId string, content *model.Content) (int64, error)
-	CreateOption(contentId string, options []*model.Option) (int64, error)
+	CreateSlide(slide *model.Slide) error
+	CreateContent(slideId string, content *model.Content) error
+	CreateOption(contentId string, options []*model.Option) error
 	UpdateSlide(presId string, slide model.Slide) (int64, error)
 	UpdateContent(slideId string, content model.Content) (int64, error)
 	UpdateOptions(contentId string, options []*model.Option) (int64, error)
@@ -27,18 +27,18 @@ func NewSlideService(slideRepo repository.ISlideRepo) *slideService {
 }
 
 func (svc *slideService) GetAllSlides(presId string) ([]*model.Slide, error) {
-	return svc.slideRepo.FindAll(presId)
+	return svc.slideRepo.FindAllSlides(presId)
 }
 
-func (svc *slideService) CreateSlide(slide *model.Slide) (int64, error) {
+func (svc *slideService) CreateSlide(slide *model.Slide) error {
 	return svc.slideRepo.InsertSlide(slide)
 }
 
-func (svc *slideService) CreateContent(slideId string, content *model.Content) (int64, error) {
+func (svc *slideService) CreateContent(slideId string, content *model.Content) error {
 	return svc.slideRepo.InsertContent(slideId, content)
 }
 
-func (svc *slideService) CreateOption(contentId string, options []*model.Option) (int64, error) {
+func (svc *slideService) CreateOption(contentId string, options []*model.Option) error {
 	return svc.slideRepo.InsertOption(contentId, options)
 }
 

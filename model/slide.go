@@ -20,5 +20,5 @@ type Option struct {
 	Name       string `json:"name,omitempty" binding:"required"`
 	Image      string `json:"image,omitempty"`
 	ContentId  uint   `json:"content_id,omitempty"`
-	TotalVotes uint   `json:"total_votes,omitempty"`
+	TotalVotes uint   `json:"total_votes"`
 }
