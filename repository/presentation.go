@@ -105,7 +105,7 @@ func (db *presRepo) UpdatePresentation(presId string, data model.Pres) (int64, e
 
 	res, err := db.conn.ExecContext(ctx, stmtUpdatePresentation, data.Name, time.Now(), presId)
 	if err != nil {
-		return -1, nil
+		return -1, err
 	}
 
 	return res.RowsAffected()

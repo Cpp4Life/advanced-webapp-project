@@ -13,6 +13,7 @@ type ISlideController interface {
 	GetAllSlides(c *gin.Context)
 	CreateSlide(c *gin.Context)
 	UpdateSlide(c *gin.Context)
+	UpdateOptionVote(c *gin.Context)
 	DeleteSlide(c *gin.Context)
 }
 
@@ -125,6 +126,27 @@ func (s *slideController) UpdateSlide(c *gin.Context) {
 
 	c.JSON(http.StatusOK, map[string]any{
 		"message": "updated successfully",
+	})
+}
+
+func (s *slideController) UpdateOptionVote(c *gin.Context) {
+	contentId := c.Param("content_id")
+	optionId := c.Query("option_id")
+
+	res, err := s.slideService.UpdateOptionVote(contentId, optionId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "failed to vote option"})
+		s.logger.Error(err.Error())
+		return
+	}
+
+	if res == 0 {
+		c.AbortWithStatusJSON(http.StatusConflict, map[string]any{"message": "failed to vote option"})
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]any{
+		"message": "voted successfully",
 	})
 }
 

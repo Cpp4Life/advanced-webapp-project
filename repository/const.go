@@ -108,5 +108,9 @@ const (
 		"JOIN `options` o on c.id = o.content_id " +
 		"WHERE s.pres_id = ?;"
 
+	stmtUpdateOptionVote = "UPDATE `options` " +
+		"SET `total_votes` = `total_votes` + 1 " +
+		"WHERE id = ? AND content_id = ?;"
+
 	stmtDeleteSlideById = "DELETE FROM `slides` WHERE pres_id = ? AND id = ?;"
 )

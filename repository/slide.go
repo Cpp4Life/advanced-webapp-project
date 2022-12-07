@@ -14,6 +14,7 @@ type ISlideRepo interface {
 	UpdateSlide(presId string, slide model.Slide) (int64, error)
 	UpdateContent(slideId string, content model.Content) (int64, error)
 	UpdateOptions(contentId string, options []*model.Option) (int64, error)
+	UpdateOptionVote(contentId string, optionId string) (int64, error)
 	DeleteSlide(presId, slideId string) (int64, error)
 }
 
@@ -146,6 +147,18 @@ func (db *slideRepo) UpdateOptions(contentId string, options []*model.Option) (i
 	}
 
 	return 0, nil
+}
+
+func (db *slideRepo) UpdateOptionVote(contentId string, optionId string) (int64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	res, err := db.conn.ExecContext(ctx, stmtUpdateOptionVote, optionId, contentId)
+	if err != nil {
+		return -1, err
+	}
+
+	return res.RowsAffected()
 }
 
 func (db *slideRepo) DeleteSlide(presId, slideId string) (int64, error) {

@@ -83,6 +83,7 @@ func main() {
 		presRoutes.POST("/:id/slide/create", slideController.CreateSlide)
 		presRoutes.PUT("/:id/slide/:slide_id/edit", slideController.UpdateSlide)
 		presRoutes.DELETE("/:id/slide/delete/:slide_id", slideController.DeleteSlide)
+		presRoutes.POST("/:id/vote/:content_id/submit", slideController.UpdateOptionVote)
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

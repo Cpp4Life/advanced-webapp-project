@@ -13,6 +13,7 @@ type ISlideService interface {
 	UpdateSlide(presId string, slide model.Slide) (int64, error)
 	UpdateContent(slideId string, content model.Content) (int64, error)
 	UpdateOptions(contentId string, options []*model.Option) (int64, error)
+	UpdateOptionVote(contentId string, optionId string) (int64, error)
 	DeleteSlide(presId, slideId string) (int64, error)
 }
 
@@ -52,6 +53,10 @@ func (svc *slideService) UpdateContent(slideId string, content model.Content) (i
 
 func (svc *slideService) UpdateOptions(contentId string, options []*model.Option) (int64, error) {
 	return svc.slideRepo.UpdateOptions(contentId, options)
+}
+
+func (svc *slideService) UpdateOptionVote(contentId string, optionId string) (int64, error) {
+	return svc.slideRepo.UpdateOptionVote(contentId, optionId)
 }
 
 func (svc *slideService) DeleteSlide(presId, slideId string) (int64, error) {
