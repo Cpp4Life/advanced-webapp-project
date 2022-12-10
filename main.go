@@ -8,13 +8,24 @@ import (
 	"advanced-webapp-project/repository"
 	"advanced-webapp-project/service"
 	"advanced-webapp-project/utils"
+	"context"
+	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
-const PORT = ":7777"
+const (
+	PORT = ":7777"
+	api  = "/api/v1"
+)
 
 var (
 	sqlDB  = db.NewSQLDB()
@@ -45,17 +56,17 @@ var (
 // @name Authorization
 func main() {
 	defer db.Close(sqlDB)
-	r := gin.Default()
-	r.Use(cors.New(middleware.InitCors()))
+	router := gin.Default()
+	router.Use(cors.New(middleware.InitCors()))
 
-	authRoutes := r.Group("/api/auth")
+	authRoutes := router.Group(fmt.Sprintf("%s/auth", api))
 	{
 		authRoutes.POST("/login", authController.Login)
 		authRoutes.POST("/register", authController.Register)
 		authRoutes.GET("/verify-email/:code", authController.VerifyEmail)
 	}
 
-	userRoutes := r.Group("/accounts").Use(middleware.AuthorizeJWT(jwtService, logger))
+	userRoutes := router.Group(fmt.Sprintf("%s/accounts", api)).Use(middleware.AuthorizeJWT(jwtService, logger))
 	{
 		userRoutes.GET("/profile", userController.GetProfile)
 		userRoutes.PUT("/edit", userController.UpdateProfile)
@@ -64,7 +75,7 @@ func main() {
 		userRoutes.GET("/joined-groups", groupController.GetJoinedGroupsByUserId)
 	}
 
-	groupRoutes := r.Group("/group")
+	groupRoutes := router.Group(fmt.Sprintf("%s/group", api))
 	{
 		groupRoutes.GET("/get-all", groupController.GetAllGroups)
 		groupRoutes.GET("/:id/general", middleware.AuthorizeJWT(jwtService, logger), groupController.GetGroupById)
@@ -72,7 +83,7 @@ func main() {
 		groupRoutes.POST("/:id/edit", middleware.AuthorizeJWT(jwtService, logger), groupController.UpdateUserRole)
 	}
 
-	presRoutes := r.Group("/presentation").Use(middleware.AuthorizeJWT(jwtService, logger))
+	presRoutes := router.Group(fmt.Sprintf("%s/presentation", api)).Use(middleware.AuthorizeJWT(jwtService, logger))
 	{
 		presRoutes.GET("/:id/general", presController.GetPresentationById)
 		presRoutes.GET("/get-all", presController.GetAllPresentations)
@@ -86,6 +97,29 @@ func main() {
 		presRoutes.POST("/:id/vote/:content_id/submit", slideController.UpdateOptionVote)
 	}
 
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	_ = r.Run(PORT)
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	srv := &http.Server{
+		Addr:    PORT,
+		Handler: router,
+	}
+
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			log.Fatalf("listen :%s\n", err)
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	logger.Warn("Shutting down server...")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal("Server forced to shutdown: ", err)
+	}
+
+	logger.Warn("Server exiting")
 }

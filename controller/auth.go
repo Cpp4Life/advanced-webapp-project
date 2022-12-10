@@ -103,7 +103,7 @@ func (ctl *authController) Register(c *gin.Context) {
 	}
 
 	email := service.Message{
-		URL:      "http://localhost:7777/api/auth/verify-email/" + code,
+		URL:      "http://localhost:7777/api/v1/auth/verify-email/" + code,
 		FullName: user.FullName,
 		Subject:  "Your account verification code",
 	}
