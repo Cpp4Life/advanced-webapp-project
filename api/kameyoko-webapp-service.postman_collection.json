@@ -1,0 +1,694 @@
+{
+	"info": {
+		"_postman_id": "21035df3-e29b-4694-9bcc-d3aa93a6c604",
+		"name": "kameyoko-webapp-service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18446235"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "User login",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"lonely@guy.com\",\n    \"password\":\"P@ssw0rd\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/auth/login",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"lonely guy\",\n    \"password\":\"P@ssw0rd\",\n    \"full_name\":\"Daniel Tr\",\n    \"user_tel\":\"\",\n    \"email\":\"lonely@guy.com\",\n    \"address\":\"somewhere in ur heart\" \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/auth/register",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODEzNzI1LCJpYXQiOjE2NzA2NDA5MjUsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.3BlkOgZ00SGwUnYnBz0Tdc3Y-1XoJftKT6a25FVgF4vDgOwnSPEfv_UUr9kJgyuX",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/accounts/profile",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"accounts",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiOCIsImVtYWlsIjoiYWJjQHRlc3QuY29tIiwiZXhwIjoxNjY5ODE0NjYyLCJpYXQiOjE2Njk2NDE4NjIsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.RN0QwkyE4JEUyKsJwGkL8vCf2PSyeftf7wORLCMIABEBlGuP8wVMGTaUjJIwTsxZ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"group created by user i\",\n    \"link\":\"http://hollymolly.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/accounts/create-group",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"accounts",
+								"create-group"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get groups by userid",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/accounts/manage-groups/",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"accounts",
+								"manage-groups",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get joined groups by userid",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/accounts/joined-groups",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"accounts",
+								"joined-groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update profile",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODEzNzI1LCJpYXQiOjE2NzA2NDA5MjUsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.3BlkOgZ00SGwUnYnBz0Tdc3Y-1XoJftKT6a25FVgF4vDgOwnSPEfv_UUr9kJgyuX",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"full_name\":\"unknown user\",\n    \"username\":\"\",\n    \"profile_img\":\"gimme an image\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/accounts/edit",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"accounts",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Group",
+			"item": [
+				{
+					"name": "Get all groups",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/group/get-all",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"group",
+								"get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get member details by groupid",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/group/4/details",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"group",
+								"4",
+								"details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get group by groupid",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/group/2/general",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"group",
+								"2",
+								"general"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/group/4/edit?userId=9&role=2",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"group",
+								"4",
+								"edit"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "9"
+								},
+								{
+									"key": "role",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Presentation",
+			"item": [
+				{
+					"name": "Get presentation by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/presentation/71280942/general",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"presentation",
+								"71280942",
+								"general"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all presentations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/presentation/get-all",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"presentation",
+								"get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create presentaion",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"new api for presentation\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/presentation/create",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"presentation",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update presentation",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"new name\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/presentation/43625538/edit",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"presentation",
+								"43625538",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete presentation",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/presentation/delete/43625538",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"presentation",
+								"delete",
+								"43625538"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all slides",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/presentation/91424173/slides/get-all",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"presentation",
+								"91424173",
+								"slides",
+								"get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create slide",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\":1,\n    \"content\":{\n        \"title\": \"new title\",\n        \"meta\":\"new meta\",\n        \"options\": [\n            {\"name\":\"example.com\", \"image\":\"mentimeter url\"}\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/presentation/91424173/slide/create",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"presentation",
+								"91424173",
+								"slide",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update slide",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\":1,\n    \"content\":{\n        \"title\": \"slide title changed\",\n        \"meta\":\"slide meta changed\",\n        \"options\": [\n            {\"id\":18,\"name\":\"new option name\",\"image\":\"gimme a url\"}\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/presentation/91424173/slide/29059341/edit?content_id=47526324",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"presentation",
+								"91424173",
+								"slide",
+								"29059341",
+								"edit"
+							],
+							"query": [
+								{
+									"key": "content_id",
+									"value": "47526324"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete slide",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/presentation/91424173/slide/delete/43659153",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"presentation",
+								"91424173",
+								"slide",
+								"delete",
+								"43659153"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update option vote",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/presentation/91424173/vote/39504782/submit?option_id=16",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"presentation",
+								"91424173",
+								"vote",
+								"39504782",
+								"submit"
+							],
+							"query": [
+								{
+									"key": "option_id",
+									"value": "16"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "kahootHost",
+			"value": "localhost:7777",
+			"type": "string"
+		},
+		{
+			"key": "v1",
+			"value": "api/v1",
+			"type": "string"
+		}
+	]
+}
