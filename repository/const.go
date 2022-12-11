@@ -63,6 +63,12 @@ const (
 		"SET role = ? " +
 		"WHERE group_id = ? AND member_id = ? "
 
+	stmtSelectUserRole = "SELECT `role` " +
+		"FROM `group_members` " +
+		"WHERE group_id = ? AND member_id = ?;"
+
+	stmtDeleteMember = "DELETE FROM `group_members` WHERE group_id = ? AND member_id = ?;"
+
 	stmtSelectPresentationById = "SELECT id, name, owner, modified_at, created_at " +
 		"FROM `presentations` WHERE id = ?; "
 

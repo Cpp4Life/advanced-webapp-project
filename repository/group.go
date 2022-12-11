@@ -16,6 +16,9 @@ type IGroupRepo interface {
 	FindGroupMemberDetailsByGroupId(groupId string) ([]*model.GroupUser, error)
 	FindGroupById(groupId string) (*model.Group, error)
 	UpdateUserRole(groupId, userId, role string) (int64, error)
+	FindUserRole(groupId, userId string) (string, error)
+	InsertMemberToGroup(groupId string, member model.Member) (int64, error)
+	DeleteMember(groupId, userId string) (int64, error)
 }
 
 type groupRepo struct {
@@ -219,4 +222,45 @@ func (db *groupRepo) UpdateUserRole(groupId, userId, role string) (int64, error)
 	}
 
 	return updateResult.LastInsertId()
+}
+
+func (db *groupRepo) FindUserRole(groupId, userId string) (string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	var role string
+	err := db.conn.QueryRowContext(ctx, stmtSelectUserRole, groupId, userId).Scan(&role)
+	if err != nil {
+		return "", err
+	}
+
+	return role, nil
+}
+
+func (db *groupRepo) InsertMemberToGroup(groupId string, member model.Member) (int64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	if member.Role == "" {
+		member.Role = "3"
+	}
+
+	res, err := db.conn.ExecContext(ctx, stmtInsertGroupMember, groupId, member.UserId, member.Role, time.Now())
+	if err != nil {
+		return -1, err
+	}
+
+	return res.LastInsertId()
+}
+
+func (db *groupRepo) DeleteMember(groupId, userId string) (int64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	res, err := db.conn.ExecContext(ctx, stmtDeleteMember, groupId, userId)
+	if err != nil {
+		return -1, err
+	}
+
+	return res.RowsAffected()
 }

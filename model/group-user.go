@@ -8,3 +8,8 @@ type GroupUser struct {
 	Role      string    `json:"role,omitempty"`
 	JoinedAt  time.Time `json:"joined_at,omitempty"`
 }
+
+type Member struct {
+	UserId uint   `json:"user_id,omitempty" binding:"required"`
+	Role   string `json:"role,omitempty"`
+}

@@ -6,6 +6,7 @@ import (
 	"advanced-webapp-project/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 type IGroupController interface {
@@ -16,6 +17,8 @@ type IGroupController interface {
 	GetGroupMemberDetailsByGroupId(c *gin.Context)
 	GetGroupById(c *gin.Context)
 	UpdateUserRole(c *gin.Context)
+	AddMemberToGroup(c *gin.Context)
+	DeleteMember(c *gin.Context)
 }
 
 type groupController struct {
@@ -166,8 +169,93 @@ func (g *groupController) UpdateUserRole(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]any{"message": "successfully updated"})
+	c.JSON(http.StatusOK, map[string]any{
+		"message": "successfully updated",
+	})
+
 	return
+}
+
+func (g *groupController) AddMemberToGroup(c *gin.Context) {
+	var member model.Member
+	if err := c.ShouldBindJSON(&member); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": err.Error()})
+		g.logger.Error(err.Error())
+		return
+	}
+
+	groupId := c.Param("id")
+	userId := g.getUserId(c.GetHeader("Authorization"))
+
+	userRole, err := g.groupService.GetUserRole(groupId, userId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "user with undefined role"})
+		g.logger.Error(err.Error())
+		return
+	}
+
+	if !g.isOwner(userRole) && !g.isCoOwner(userRole) {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]any{"message": "user doesn't have permission to invite member"})
+		return
+	}
+
+	_, err = g.groupService.AddMemberToGroup(groupId, member)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "user already a member"})
+		g.logger.Error(err.Error())
+		return
+	}
+
+	c.JSON(http.StatusCreated, map[string]any{
+		"message": "invited successfully",
+	})
+
+	return
+}
+
+func (g *groupController) DeleteMember(c *gin.Context) {
+	var member model.Member
+	if err := c.ShouldBindJSON(&member); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": err.Error()})
+		g.logger.Error(err.Error())
+		return
+	}
+
+	groupId := c.Param("id")
+	userId := g.getUserId(c.GetHeader("Authorization"))
+
+	userRole, err := g.groupService.GetUserRole(groupId, userId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "user with undefined role"})
+		g.logger.Error(err.Error())
+		return
+	}
+
+	if !g.isOwner(userRole) && !g.isCoOwner(userRole) {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]any{"message": "user doesn't have permission to invite member"})
+		return
+	}
+
+	_, err = g.groupService.DeleteMember(groupId, strconv.Itoa(int(member.UserId)))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "failed to delete user"})
+		g.logger.Error(err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]any{
+		"message": "deleted successfully",
+	})
+
+	return
+}
+
+func (g *groupController) isOwner(role string) bool {
+	return role == "1"
+}
+
+func (g *groupController) isCoOwner(role string) bool {
+	return role == "2"
 }
 
 func (g *groupController) getUserId(token string) string {

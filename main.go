@@ -94,6 +94,8 @@ func main() {
 		groupRoutes.GET("/:id/general", middleware.AuthorizeJWT(jwtService, logger), groupController.GetGroupById)
 		groupRoutes.GET("/:id/details", middleware.AuthorizeJWT(jwtService, logger), groupController.GetGroupMemberDetailsByGroupId)
 		groupRoutes.POST("/:id/edit", middleware.AuthorizeJWT(jwtService, logger), groupController.UpdateUserRole)
+		groupRoutes.POST("/:id/add-member", middleware.AuthorizeJWT(jwtService, logger), groupController.AddMemberToGroup)
+		groupRoutes.DELETE("/:id/delete-member", middleware.AuthorizeJWT(jwtService, logger), groupController.DeleteMember)
 	}
 
 	presRoutes := router.Group(fmt.Sprintf("%s/presentation", api)).Use(middleware.AuthorizeJWT(jwtService, logger))
