@@ -103,9 +103,10 @@ func (ctl *authController) Register(c *gin.Context) {
 	}
 
 	email := service.Message{
-		URL:      "http://localhost:7777/api/v1/auth/verify-email/" + code,
-		FullName: user.FullName,
-		Subject:  "Your account verification code",
+		URL:       "http://localhost:7777/api/v1/auth/verify-email/" + code,
+		FullName:  user.FullName,
+		Subject:   "Your account verification code",
+		Paragraph: "Please verify your account to be able to login",
 	}
 
 	go func(user *model.User, email *service.Message) {

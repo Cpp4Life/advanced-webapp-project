@@ -28,9 +28,10 @@ type mail struct {
 }
 
 type Message struct {
-	URL      string
-	FullName string
-	Subject  string
+	URL       string
+	FullName  string
+	Subject   string
+	Paragraph string
 }
 
 func NewMailerService(logger *utils.Logger) *mail {

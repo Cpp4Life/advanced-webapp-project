@@ -5,6 +5,7 @@ import (
 	"advanced-webapp-project/service"
 	"advanced-webapp-project/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/thanhpk/randstr"
 	"net/http"
 	"strconv"
 )
@@ -19,6 +20,7 @@ type IGroupController interface {
 	UpdateUserRole(c *gin.Context)
 	AddMemberToGroup(c *gin.Context)
 	DeleteMember(c *gin.Context)
+	InviteMember(c *gin.Context)
 }
 
 type groupController struct {
@@ -26,14 +28,18 @@ type groupController struct {
 	jwtService   service.IJWTService
 	groupService service.IGroupService
 	userService  service.IUserService
+	authService  service.IAuthService
+	mailService  service.IMailerService
 }
 
-func NewGroupController(logger *utils.Logger, jwtSvc service.IJWTService, groupSvc service.IGroupService, userSvc service.IUserService) *groupController {
+func NewGroupController(logger *utils.Logger, jwtSvc service.IJWTService, groupSvc service.IGroupService, userSvc service.IUserService, authSvc service.IAuthService, mailSvc service.IMailerService) *groupController {
 	return &groupController{
 		logger:       logger,
 		jwtService:   jwtSvc,
 		groupService: groupSvc,
 		userService:  userSvc,
+		authService:  authSvc,
+		mailService:  mailSvc,
 	}
 }
 
@@ -68,6 +74,7 @@ func (g *groupController) CreateGroup(c *gin.Context) {
 		return
 	}
 
+	group.Link = randstr.String(32)
 	_, err = g.groupService.CreateGroup(&group, userId)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "failed to create group!"})
@@ -199,6 +206,8 @@ func (g *groupController) AddMemberToGroup(c *gin.Context) {
 		return
 	}
 
+	user, _ := g.authService.GetUserByEmail(member.Email)
+	member.UserId = user.Id
 	_, err = g.groupService.AddMemberToGroup(groupId, member)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "user already a member"})
@@ -245,6 +254,37 @@ func (g *groupController) DeleteMember(c *gin.Context) {
 
 	c.JSON(http.StatusOK, map[string]any{
 		"message": "deleted successfully",
+	})
+
+	return
+}
+
+func (g *groupController) InviteMember(c *gin.Context) {
+	type invitationReq struct {
+		Email string `json:"email"`
+		Link  string `json:"link"`
+	}
+
+	var data invitationReq
+	if err := c.ShouldBindJSON(&data); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": err.Error()})
+		g.logger.Error(err.Error())
+		return
+	}
+
+	email := service.Message{
+		URL:       data.Link,
+		FullName:  "there",
+		Subject:   "Invitation link to group",
+		Paragraph: "Please click the link below to join our group",
+	}
+
+	go func(user *model.User, email *service.Message) {
+		g.mailService.SendMail(user, email)
+	}(&model.User{Email: data.Email}, &email)
+
+	c.JSON(http.StatusCreated, map[string]any{
+		"message": "An invitation has been sent to " + data.Email,
 	})
 
 	return

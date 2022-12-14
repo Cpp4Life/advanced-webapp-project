@@ -10,6 +10,7 @@ type GroupUser struct {
 }
 
 type Member struct {
-	UserId uint   `json:"user_id,omitempty" binding:"required"`
+	UserId uint   `json:"user_id,omitempty"`
+	Email  string `json:"string"`
 	Role   string `json:"role,omitempty"`
 }

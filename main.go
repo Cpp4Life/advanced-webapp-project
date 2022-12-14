@@ -50,7 +50,7 @@ var (
 
 	authController  = controller.NewAuthHandler(logger, jwtService, authService, mailService)
 	userController  = controller.NewUserController(logger, jwtService, userService, groupService)
-	groupController = controller.NewGroupController(logger, jwtService, groupService, userService)
+	groupController = controller.NewGroupController(logger, jwtService, groupService, userService, authService, mailService)
 	presController  = controller.NewPresController(logger, jwtService, presService, userService)
 	slideController = controller.NewSlideController(logger, slideService)
 )
@@ -96,6 +96,7 @@ func main() {
 		groupRoutes.POST("/:id/edit", middleware.AuthorizeJWT(jwtService, logger), groupController.UpdateUserRole)
 		groupRoutes.POST("/:id/add-member", middleware.AuthorizeJWT(jwtService, logger), groupController.AddMemberToGroup)
 		groupRoutes.DELETE("/:id/delete-member", middleware.AuthorizeJWT(jwtService, logger), groupController.DeleteMember)
+		groupRoutes.POST("/invite-member", middleware.AuthorizeJWT(jwtService, logger), groupController.InviteMember)
 	}
 
 	presRoutes := router.Group(fmt.Sprintf("%s/presentation", api)).Use(middleware.AuthorizeJWT(jwtService, logger))
