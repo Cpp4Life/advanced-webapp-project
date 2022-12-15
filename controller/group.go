@@ -192,23 +192,10 @@ func (g *groupController) AddMemberToGroup(c *gin.Context) {
 	}
 
 	groupId := c.Param("id")
-	userId := g.getUserId(c.GetHeader("Authorization"))
-
-	userRole, err := g.groupService.GetUserRole(groupId, userId)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "user with undefined role"})
-		g.logger.Error(err.Error())
-		return
-	}
-
-	if !g.isOwner(userRole) && !g.isCoOwner(userRole) {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]any{"message": "user doesn't have permission to invite member"})
-		return
-	}
-
 	user, _ := g.authService.GetUserByEmail(member.Email)
 	member.UserId = user.Id
-	_, err = g.groupService.AddMemberToGroup(groupId, member)
+
+	_, err := g.groupService.AddMemberToGroup(groupId, member)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "user already a member"})
 		g.logger.Error(err.Error())
@@ -269,6 +256,20 @@ func (g *groupController) InviteMember(c *gin.Context) {
 	if err := c.ShouldBindJSON(&data); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": err.Error()})
 		g.logger.Error(err.Error())
+		return
+	}
+
+	groupId := c.Param("id")
+	userId := g.getUserId(c.GetHeader("Authorization"))
+	userRole, err := g.groupService.GetUserRole(groupId, userId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "user with undefined role"})
+		g.logger.Error(err.Error())
+		return
+	}
+
+	if !g.isOwner(userRole) && !g.isCoOwner(userRole) {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]any{"message": "user doesn't have permission to invite member"})
 		return
 	}
 
