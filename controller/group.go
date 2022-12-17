@@ -192,9 +192,6 @@ func (g *groupController) AddMemberToGroup(c *gin.Context) {
 	}
 
 	groupId := c.Param("id")
-	user, _ := g.authService.GetUserByEmail(member.Email)
-	member.UserId = user.Id
-
 	_, err := g.groupService.AddMemberToGroup(groupId, member)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "user already a member"})
