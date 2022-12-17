@@ -8,14 +8,11 @@ import (
 	"advanced-webapp-project/repository"
 	"advanced-webapp-project/service"
 	"advanced-webapp-project/utils"
+	"advanced-webapp-project/websocket"
 	"context"
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	socketio "github.com/googollee/go-socket.io"
-	"github.com/googollee/go-socket.io/engineio"
-	"github.com/googollee/go-socket.io/engineio/transport"
-	"github.com/googollee/go-socket.io/engineio/transport/polling"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"log"
@@ -60,15 +57,6 @@ var (
 // @name Authorization
 func main() {
 	defer db.Close(sqlDB)
-	sServer := socketio.NewServer(&engineio.Options{
-		Transports: []transport.Transport{
-			&polling.Transport{
-				Client: &http.Client{
-					Timeout: time.Minute,
-				},
-			},
-		},
-	})
 	router := gin.Default()
 	router.Use(cors.New(middleware.InitCors()))
 
@@ -114,61 +102,26 @@ func main() {
 	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	router.GET("/socket.io/*any", gin.WrapH(sServer))
-	router.POST("/socket.io/*any", gin.WrapH(sServer))
-	router.StaticFS("/public", http.Dir("templates"))
 
+	// start websocket server
+	hub := websocket.NewHub()
+	go hub.Run()
+	router.GET("/ws", func(c *gin.Context) {
+		logger.Warn("hello websocket")
+		websocket.ServeWs(hub, c.Writer, c.Request)
+	})
+
+	// start http server
 	srv := &http.Server{
 		Addr:    PORT,
 		Handler: router,
 	}
-
-	sServer.OnConnect("/", func(s socketio.Conn) error {
-		s.SetContext("")
-		logger.Info(fmt.Sprintf("[CONNECTED]: %s", s.ID()))
-		s.Join("bcast")
-		return nil
-	})
-
-	sServer.OnEvent("/", "notice", func(s socketio.Conn, msg string) {
-		logger.Info(fmt.Sprintf("[NOTICE]: %s", msg))
-		s.Emit("reply", "[MESSAGE]: "+msg)
-	})
-
-	sServer.OnEvent("/chat", "msg", func(s socketio.Conn, msg string) string {
-		msg = fmt.Sprintf("User #%s: %s", s.ID(), msg)
-		s.SetContext(msg)
-		sServer.BroadcastToRoom("", "bcast", "reply", msg)
-		return "receive " + msg
-	})
-
-	sServer.OnEvent("/", "bye", func(s socketio.Conn) string {
-		last := s.Context().(string)
-		s.Emit("bye", last)
-		s.Close()
-		return last
-	})
-
-	sServer.OnError("/", func(s socketio.Conn, e error) {
-		logger.Error(fmt.Sprintf("[ERROR]: %s", e.Error()))
-	})
-
-	sServer.OnDisconnect("/", func(s socketio.Conn, reason string) {
-		logger.Warn(fmt.Sprintf("[CLOSED]: %s", reason))
-	})
 
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {
 			log.Fatalf("listen %s\n", err)
 		}
 	}()
-
-	go func() {
-		if err := sServer.Serve(); err != nil {
-			log.Fatalf("socketio listen error: %s\n", err)
-		}
-	}()
-	defer sServer.Close()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
@@ -184,3 +137,58 @@ func main() {
 
 	logger.Warn("Server exiting")
 }
+
+//router.GET("/socket.io/*any", gin.WrapH(sServer))
+//router.POST("/socket.io/*any", gin.WrapH(sServer))
+//router.StaticFS("/public", http.Dir("templates"))
+
+//sServer := socketio.NewServer(&engineio.Options{
+//	Transports: []transport.Transport{
+//		&polling.Transport{
+//			Client: &http.Client{
+//				Timeout: time.Minute,
+//			},
+//		},
+//	},
+//})
+
+//sServer.OnConnect("/", func(s socketio.Conn) error {
+//	s.SetContext("")
+//	logger.Info(fmt.Sprintf("[CONNECTED]: %s", s.ID()))
+//	s.Join("bcast")
+//	return nil
+//})
+//
+//sServer.OnEvent("/", "notice", func(s socketio.Conn, msg string) {
+//	logger.Info(fmt.Sprintf("[NOTICE]: %s", msg))
+//	s.Emit("reply", "[MESSAGE]: "+msg)
+//})
+//
+//sServer.OnEvent("/chat", "msg", func(s socketio.Conn, msg string) string {
+//	msg = fmt.Sprintf("User #%s: %s", s.ID(), msg)
+//	s.SetContext(msg)
+//	sServer.BroadcastToRoom("", "bcast", "reply", msg)
+//	return "receive " + msg
+//})
+//
+//sServer.OnEvent("/", "bye", func(s socketio.Conn) string {
+//	last := s.Context().(string)
+//	s.Emit("bye", last)
+//	s.Close()
+//	return last
+//})
+//
+//sServer.OnError("/", func(s socketio.Conn, e error) {
+//	logger.Error(fmt.Sprintf("[ERROR]: %s", e.Error()))
+//})
+//
+//sServer.OnDisconnect("/", func(s socketio.Conn, reason string) {
+//	logger.Warn(fmt.Sprintf("[CLOSED]: %s", reason))
+//})
+
+//go func() {
+//	if err := sServer.Serve(); err != nil {
+//		log.Fatalf("socketio listen error: %s\n", err)
+//	}
+//}()
+//defer sServer.Close()
