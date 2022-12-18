@@ -16,6 +16,7 @@ type IUserRepo interface {
 	VerifyCredential(email, password string) (*model.User, error)
 	FindUserById(id string) (*model.User, error)
 	ModifyUserById(id string, user model.User) (int64, error)
+	UpdatePassword(id, password string) (int64, error)
 }
 
 type userRepo struct {
@@ -167,4 +168,21 @@ func (db *userRepo) ModifyUserById(id string, user model.User) (int64, error) {
 	}
 
 	return updateResult.RowsAffected()
+}
+
+func (db *userRepo) UpdatePassword(id, password string) (int64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 12)
+	if err != nil {
+		return -1, err
+	}
+
+	res, err := db.conn.ExecContext(ctx, stmtUpdatePassword, hashedPassword, time.Now(), id)
+	if err != nil {
+		return -1, err
+	}
+
+	return res.RowsAffected()
 }

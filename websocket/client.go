@@ -72,7 +72,7 @@ func (c *Client) readPump() {
 			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
-		fmt.Printf("[MESSAGE]: %s\n", message)
+		fmt.Printf("[MESSAGE]: %+v\n", message)
 		c.hub.broadcast <- message
 	}
 }

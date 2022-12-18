@@ -15,6 +15,7 @@ type IAuthController interface {
 	Login(c *gin.Context)
 	Register(c *gin.Context)
 	VerifyEmail(c *gin.Context)
+	ForgotPassword(c *gin.Context)
 }
 
 type authController struct {
@@ -137,4 +138,51 @@ func (ctl *authController) VerifyEmail(c *gin.Context) {
 	}
 
 	c.Redirect(http.StatusPermanentRedirect, "http://localhost:3000/login?redirect=")
+}
+
+func (ctl *authController) ForgotPassword(c *gin.Context) {
+	type req struct {
+		Email string `json:"email"`
+	}
+	var body req
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": err.Error()})
+		ctl.logger.Error(err.Error())
+		return
+	}
+
+	user, _ := ctl.authService.GetUserByEmail(body.Email)
+	if user == nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, map[string]any{"message": "email not found"})
+		return
+	}
+
+	user.IsVerified, _ = ctl.authService.GetVerifiedStatusByEmail(body.Email)
+	if !user.IsVerified {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]any{"message": "verify your account first in order to reset password"})
+		return
+	}
+
+	newPassword := randstr.String(10)
+	_, err := ctl.authService.UpdatePassword(strconv.Itoa(int(user.Id)), newPassword)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "failed to reset password"})
+		ctl.logger.Error(err.Error())
+		return
+	}
+
+	email := service.Message{
+		URL:       "http://localhost:3000/login",
+		FullName:  user.FullName,
+		Subject:   "New password for account",
+		Paragraph: fmt.Sprintf("Here is your new password %s. Please keep it secret!", newPassword),
+	}
+
+	go func() {
+		ctl.mailService.SendMail(user, &email)
+	}()
+
+	c.JSON(http.StatusOK, map[string]any{
+		"message": "new password has been sent to " + user.Email,
+	})
 }

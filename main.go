@@ -65,6 +65,7 @@ func main() {
 		authRoutes.POST("/login", authController.Login)
 		authRoutes.POST("/register", authController.Register)
 		authRoutes.GET("/verify-email/:code", authController.VerifyEmail)
+		authRoutes.GET("/forgot-password", authController.ForgotPassword)
 	}
 
 	userRoutes := router.Group(fmt.Sprintf("%s/accounts", api)).Use(middleware.AuthorizeJWT(jwtService, logger))

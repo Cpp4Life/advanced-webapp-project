@@ -29,6 +29,10 @@ const (
 		"SET full_name = ?, username = ?, profile_img = ?, updated_at = ? " +
 		"WHERE id = ?;"
 
+	stmtUpdatePassword = "UPDATE `users` " +
+		"SET password = ?, updated_at = ? " +
+		"WHERE id = ?;"
+
 	stmtInsertGroup = "INSERT INTO `groups` " +
 		"(name, link, `desc`, created_at, owner) " +
 		"VALUES (?, ?, ?, ?, ?);"
