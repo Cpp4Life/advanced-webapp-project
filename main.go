@@ -109,8 +109,7 @@ func main() {
 	hub := websocket.NewHub()
 	go hub.Run()
 	router.GET("/ws", func(c *gin.Context) {
-		logger.Warn("hello websocket")
-		websocket.ServeWs(hub, c.Writer, c.Request)
+		websocket.ServeWs(slideService, hub, c.Writer, c.Request)
 	})
 
 	// start http server

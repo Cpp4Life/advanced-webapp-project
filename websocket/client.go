@@ -1,7 +1,9 @@
 package websocket
 
 import (
+	"advanced-webapp-project/service"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
 	"log"
@@ -38,7 +40,8 @@ var upgrader = websocket.Upgrader{
 
 // Client is a middleman between the websocket connection and the hub
 type Client struct {
-	hub *Hub
+	slideSvc service.ISlideService
+	hub      *Hub
 
 	// The websocket connection
 	conn *websocket.Conn
@@ -72,7 +75,16 @@ func (c *Client) readPump() {
 			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
-		fmt.Printf("[MESSAGE]: %+v\n", message)
+		fmt.Printf("[MESSAGE]: %+v typeof %T\n", message, message)
+		type req struct {
+			Id      string `json:"id"`
+			Option  string `json:"option"`
+			Content string `json:"content"`
+		}
+		var body req
+		_ = json.Unmarshal(message, &body)
+		fmt.Printf("\nJSON: %s\n", body)
+		_, _ = c.slideSvc.UpdateOptionVote(body.Content, body.Option)
 		c.hub.broadcast <- message
 	}
 }
@@ -124,13 +136,13 @@ func (c *Client) writePump() {
 }
 
 // ServeWs handles websocket requests from the peer
-func ServeWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
+func ServeWs(slideSvc service.ISlideService, hub *Hub, w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
+	client := &Client{slideSvc: slideSvc, hub: hub, conn: conn, send: make(chan []byte, 256)}
 	client.hub.register <- client
 
 	// Allow collection of memory referenced by the caller by doing all work in
