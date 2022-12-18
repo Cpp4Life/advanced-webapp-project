@@ -16,6 +16,8 @@ type IGroupRepo interface {
 	FindGroupMemberDetailsByGroupId(groupId string) ([]*model.GroupUser, error)
 	FindGroupById(groupId string) (*model.Group, error)
 	UpdateUserRole(groupId, userId, role string) (int64, error)
+	DeleteGroup(groupId string) (int64, error)
+	DeleteAllGroupMembers(groupId string) (int64, error)
 	FindUserRole(groupId, userId string) (string, error)
 	InsertMemberToGroup(groupId string, member model.Member) (int64, error)
 	DeleteMember(groupId, userId string) (int64, error)
@@ -222,6 +224,30 @@ func (db *groupRepo) UpdateUserRole(groupId, userId, role string) (int64, error)
 	}
 
 	return updateResult.LastInsertId()
+}
+
+func (db *groupRepo) DeleteGroup(groupId string) (int64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	res, err := db.conn.ExecContext(ctx, stmtDeleteGroupById, groupId)
+	if err != nil {
+		return -1, err
+	}
+
+	return res.RowsAffected()
+}
+
+func (db *groupRepo) DeleteAllGroupMembers(groupId string) (int64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	res, err := db.conn.ExecContext(ctx, stmtDeleteAllGroupMembers, groupId)
+	if err != nil {
+		return -1, err
+	}
+
+	return res.RowsAffected()
 }
 
 func (db *groupRepo) FindUserRole(groupId, userId string) (string, error) {

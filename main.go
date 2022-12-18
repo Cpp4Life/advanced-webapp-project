@@ -82,6 +82,7 @@ func main() {
 		groupRoutes.GET("/:id/general", middleware.AuthorizeJWT(jwtService, logger), groupController.GetGroupById)
 		groupRoutes.GET("/:id/details", middleware.AuthorizeJWT(jwtService, logger), groupController.GetGroupMemberDetailsByGroupId)
 		groupRoutes.POST("/:id/edit", middleware.AuthorizeJWT(jwtService, logger), groupController.UpdateUserRole)
+		groupRoutes.DELETE("/delete/:id", middleware.AuthorizeJWT(jwtService, logger), groupController.DeleteGroup)
 		groupRoutes.POST("/:id/add-member", middleware.AuthorizeJWT(jwtService, logger), groupController.AddMemberToGroup)
 		groupRoutes.DELETE("/:id/delete-member", middleware.AuthorizeJWT(jwtService, logger), groupController.DeleteMember)
 		groupRoutes.POST("/:id/invite-member", middleware.AuthorizeJWT(jwtService, logger), groupController.InviteMember)

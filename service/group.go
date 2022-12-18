@@ -13,6 +13,8 @@ type IGroupService interface {
 	GetGroupMemberDetailsByGroupId(groupId string) ([]*model.GroupUser, error)
 	GetGroupById(groupId string) (*model.Group, error)
 	UpdateUserRole(groupId, userId, role string) (int64, error)
+	DeleteGroup(groupId string) (int64, error)
+	DeleteAllGroupMembers(groupId string) (int64, error)
 	GetUserRole(groupId, userId string) (string, error)
 	AddMemberToGroup(groupId string, member model.Member) (int64, error)
 	DeleteMember(groupId, userId string) (int64, error)
@@ -54,6 +56,14 @@ func (svc *groupService) GetGroupById(groupId string) (*model.Group, error) {
 
 func (svc *groupService) UpdateUserRole(groupId, userId, role string) (int64, error) {
 	return svc.groupRepo.UpdateUserRole(groupId, userId, role)
+}
+
+func (svc *groupService) DeleteGroup(groupId string) (int64, error) {
+	return svc.groupRepo.DeleteGroup(groupId)
+}
+
+func (svc *groupService) DeleteAllGroupMembers(groupId string) (int64, error) {
+	return svc.groupRepo.DeleteAllGroupMembers(groupId)
 }
 
 func (svc *groupService) GetUserRole(groupId, userId string) (string, error) {

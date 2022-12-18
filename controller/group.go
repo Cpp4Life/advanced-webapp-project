@@ -18,6 +18,7 @@ type IGroupController interface {
 	GetGroupMemberDetailsByGroupId(c *gin.Context)
 	GetGroupById(c *gin.Context)
 	UpdateUserRole(c *gin.Context)
+	DeleteGroup(c *gin.Context)
 	AddMemberToGroup(c *gin.Context)
 	DeleteMember(c *gin.Context)
 	InviteMember(c *gin.Context)
@@ -181,6 +182,41 @@ func (g *groupController) UpdateUserRole(c *gin.Context) {
 	})
 
 	return
+}
+
+func (g *groupController) DeleteGroup(c *gin.Context) {
+	groupId := c.Param("id")
+	userId := g.getUserId(c.GetHeader("Authorization"))
+
+	userRole, err := g.groupService.GetUserRole(groupId, userId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "user with undefined role"})
+		g.logger.Error(err.Error())
+		return
+	}
+
+	if !g.isOwner(userRole) {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]any{"message": "user doesn't have permission to delete group"})
+		return
+	}
+
+	_, err = g.groupService.DeleteGroup(groupId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "failed to delete group"})
+		g.logger.Error(err.Error())
+		return
+	}
+
+	_, err = g.groupService.DeleteAllGroupMembers(groupId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "failed to delete group members"})
+		g.logger.Error(err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]any{
+		"message": "deleted successfully",
+	})
 }
 
 func (g *groupController) AddMemberToGroup(c *gin.Context) {

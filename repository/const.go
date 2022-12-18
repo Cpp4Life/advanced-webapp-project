@@ -63,6 +63,10 @@ const (
 		"SET role = ? " +
 		"WHERE group_id = ? AND member_id = ? "
 
+	stmtDeleteGroupById = "DELETE FROM `groups` WHERE id = ?;"
+
+	stmtDeleteAllGroupMembers = "DELETE FROM `group_members` WHERE group_id = ?;"
+
 	stmtSelectUserRole = "SELECT `role` " +
 		"FROM `group_members` " +
 		"WHERE group_id = ? AND member_id = ?;"
