@@ -19,7 +19,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\":\"lonely@guy.com\",\n    \"password\":\"P@ssw0rd\"\n}",
+							"raw": "{\n    \"email\":\"bensen.pacey@falltrack.net\",\n    \"password\":\"12341234\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -47,7 +47,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\":\"lonely guy\",\n    \"password\":\"P@ssw0rd\",\n    \"full_name\":\"Daniel Tr\",\n    \"user_tel\":\"\",\n    \"email\":\"lonely@guy.com\",\n    \"address\":\"somewhere in ur heart\" \n}",
+							"raw": "{\n    \"username\":\"someone\",\n    \"password\":\"P@ssw0rd\",\n    \"full_name\":\"Daniel Tr\",\n    \"user_tel\":\"\",\n    \"email\":\"dattruong1220@gmail.com\",\n    \"address\":\"somewhere on earth\" \n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -110,13 +110,13 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiOCIsImVtYWlsIjoiYWJjQHRlc3QuY29tIiwiZXhwIjoxNjY5ODE0NjYyLCJpYXQiOjE2Njk2NDE4NjIsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.RN0QwkyE4JEUyKsJwGkL8vCf2PSyeftf7wORLCMIABEBlGuP8wVMGTaUjJIwTsxZ",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMSIsImVtYWlsIjoiaGVucnlAa2FuZS5jb20iLCJleHAiOjE2NzEyMDI3MTAsImlhdCI6MTY3MTAyOTkxMCwiaXNzIjoiMjAyMi0xOS0xMS0xOUtUUE0zLUFkdmFuY2VkLVdlYi1BcHAifQ.40AI5q45TYtD_w073CphWODRll502u8SKopHiHUnQgGzIC_3mX3oBrR9kkIA7olY",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\":\"group created by user i\",\n    \"link\":\"http://hollymolly.com\"\n}",
+							"raw": "{\n    \"name\":\"harry kane FC\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -224,6 +224,37 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Forgot password",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"dattruong1220@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/auth/forgot-password",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"auth",
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -256,7 +287,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwOTQzMjEwLCJpYXQiOjE2NzA3NzA0MTAsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.9VJ9UWDjdsi57KleutRSIHpIZzlt1FOt4tEf7Esu0PtwSugBA-3LoTrFLH6hnqdS",
 								"type": "text"
 							}
 						],
@@ -282,7 +313,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwOTQzMjEwLCJpYXQiOjE2NzA3NzA0MTAsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.9VJ9UWDjdsi57KleutRSIHpIZzlt1FOt4tEf7Esu0PtwSugBA-3LoTrFLH6hnqdS",
 								"type": "text"
 							}
 						],
@@ -332,6 +363,144 @@
 									"key": "role",
 									"value": "2"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add member",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMSIsImVtYWlsIjoiaGVucnlAa2FuZS5jb20iLCJleHAiOjE2NzE0NTExMDEsImlhdCI6MTY3MTI3ODMwMSwiaXNzIjoiMjAyMi0xOS0xMS0xOUtUUE0zLUFkdmFuY2VkLVdlYi1BcHAifQ.4yM8dg5L7BuFlJp_R5XQxhXZwzgRg9e3n6yWcC04qjc6M7pIF-vHLFid631rfieS",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\":2\n}   ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/group/1/add-member",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"group",
+								"1",
+								"add-member"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "4",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete member",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMSIsImVtYWlsIjoiaGVucnlAa2FuZS5jb20iLCJleHAiOjE2NzE0NTExMDEsImlhdCI6MTY3MTI3ODMwMSwiaXNzIjoiMjAyMi0xOS0xMS0xOUtUUE0zLUFkdmFuY2VkLVdlYi1BcHAifQ.4yM8dg5L7BuFlJp_R5XQxhXZwzgRg9e3n6yWcC04qjc6M7pIF-vHLFid631rfieS",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\":2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/group/1/delete-member",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"group",
+								"1",
+								"delete-member"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invite member",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMSIsImVtYWlsIjoiaGVucnlAa2FuZS5jb20iLCJleHAiOjE2NzE0NTExMDEsImlhdCI6MTY3MTI3ODMwMSwiaXNzIjoiMjAyMi0xOS0xMS0xOUtUUE0zLUFkdmFuY2VkLVdlYi1BcHAifQ.4yM8dg5L7BuFlJp_R5XQxhXZwzgRg9e3n6yWcC04qjc6M7pIF-vHLFid631rfieS",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"tilorec837@paxven.com\",\n    \"link\":\"http://localhost:3000/join-group/1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/group/1/invite-member",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"group",
+								"1",
+								"invite-member"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete group",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMSIsImVtYWlsIjoiaGVucnlAa2FuZS5jb20iLCJleHAiOjE2NzE1MDY5MDMsImlhdCI6MTY3MTMzNDEwMywiaXNzIjoiMjAyMi0xOS0xMS0xOUtUUE0zLUFkdmFuY2VkLVdlYi1BcHAifQ.8M8Tsut6E_ZAPYD7PoY5d2KkkPEQM39BZsieav2e_yK0sPhGMUOT-quqIKa5tZ-6",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/group/delete/1",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"group",
+								"delete",
+								"1"
 							]
 						}
 					},
@@ -522,13 +691,13 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNyIsImVtYWlsIjoiYmVuc2VuLnBhY2V5QGZhbGx0cmFjay5uZXQiLCJleHAiOjE2NzE1MTU2NTYsImlhdCI6MTY3MTM0Mjg1NiwiaXNzIjoiMjAyMi0xOS0xMS0xOUtUUE0zLUFkdmFuY2VkLVdlYi1BcHAifQ.XCZCr_ynjZs9mwCyL3ZyxdoQJHPdKUGHFv-nzy5Qb7J8NF6D2KtAfIHPNVsSUFcz",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"type\":1,\n    \"content\":{\n        \"title\": \"new title\",\n        \"meta\":\"new meta\",\n        \"options\": [\n            {\"name\":\"example.com\", \"image\":\"mentimeter url\"}\n        ]\n    }\n}",
+							"raw": "{\n    \"type\": 9,\n    \"content\": {\n        \"title\": \"paragraph title\",\n        \"meta\": \"paragraph meta\",\n        \"paragraph\": {\n            \"heading\": \"para heading\",\n            \"text\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.\"\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -536,20 +705,138 @@
 							}
 						},
 						"url": {
-							"raw": "{{kahootHost}}/{{v1}}/presentation/91424173/slide/create",
+							"raw": "{{kahootHost}}/{{v1}}/presentation/81554810/slide/create",
 							"host": [
 								"{{kahootHost}}"
 							],
 							"path": [
 								"{{v1}}",
 								"presentation",
-								"91424173",
+								"81554810",
 								"slide",
 								"create"
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Create multiple choices",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNyIsImVtYWlsIjoiYmVuc2VuLnBhY2V5QGZhbGx0cmFjay5uZXQiLCJleHAiOjE2NzE1MTU2NTYsImlhdCI6MTY3MTM0Mjg1NiwiaXNzIjoiMjAyMi0xOS0xMS0xOUtUUE0zLUFkdmFuY2VkLVdlYi1BcHAifQ.XCZCr_ynjZs9mwCyL3ZyxdoQJHPdKUGHFv-nzy5Qb7J8NF6D2KtAfIHPNVsSUFcz",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"type\": 1,\n    \"content\": {\n        \"title\": \"multiple choice title\",\n        \"meta\": \"multiple choice meta\",\n        \"options\": [\n            {\n                \"name\": \"example.com\",\n                \"image\": \"mentimeter url\"\n            },\n            {\n                \"name\": \"example2.com\"\n            }\n        ]\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{kahootHost}}/{{v1}}/presentation/81554810/slide/create",
+									"host": [
+										"{{kahootHost}}"
+									],
+									"path": [
+										"{{v1}}",
+										"presentation",
+										"81554810",
+										"slide",
+										"create"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "Create heading",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNyIsImVtYWlsIjoiYmVuc2VuLnBhY2V5QGZhbGx0cmFjay5uZXQiLCJleHAiOjE2NzE1MTU2NTYsImlhdCI6MTY3MTM0Mjg1NiwiaXNzIjoiMjAyMi0xOS0xMS0xOUtUUE0zLUFkdmFuY2VkLVdlYi1BcHAifQ.XCZCr_ynjZs9mwCyL3ZyxdoQJHPdKUGHFv-nzy5Qb7J8NF6D2KtAfIHPNVsSUFcz",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"type\": 8,\n    \"content\": {\n        \"title\": \"heading title\",\n        \"meta\": \"heading meta\",\n        \"heading\": {\n            \"heading\": \"big heading\",\n            \"sub_heading\": \"sub heading\",\n            \"image\": \"gimme image here\"\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{kahootHost}}/{{v1}}/presentation/81554810/slide/create",
+									"host": [
+										"{{kahootHost}}"
+									],
+									"path": [
+										"{{v1}}",
+										"presentation",
+										"81554810",
+										"slide",
+										"create"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "Create paragraph",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNyIsImVtYWlsIjoiYmVuc2VuLnBhY2V5QGZhbGx0cmFjay5uZXQiLCJleHAiOjE2NzE1MTU2NTYsImlhdCI6MTY3MTM0Mjg1NiwiaXNzIjoiMjAyMi0xOS0xMS0xOUtUUE0zLUFkdmFuY2VkLVdlYi1BcHAifQ.XCZCr_ynjZs9mwCyL3ZyxdoQJHPdKUGHFv-nzy5Qb7J8NF6D2KtAfIHPNVsSUFcz",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"type\": 9,\n    \"content\": {\n        \"title\": \"paragraph title\",\n        \"meta\": \"paragraph meta\",\n        \"paragraph\": {\n            \"heading\": \"para heading\",\n            \"text\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.\"\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{kahootHost}}/{{v1}}/presentation/81554810/slide/create",
+									"host": [
+										"{{kahootHost}}"
+									],
+									"path": [
+										"{{v1}}",
+										"presentation",
+										"81554810",
+										"slide",
+										"create"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
 				},
 				{
 					"name": "Update slide",
@@ -558,13 +845,13 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNyIsImVtYWlsIjoiYmVuc2VuLnBhY2V5QGZhbGx0cmFjay5uZXQiLCJleHAiOjE2NzE1MTU2NTYsImlhdCI6MTY3MTM0Mjg1NiwiaXNzIjoiMjAyMi0xOS0xMS0xOUtUUE0zLUFkdmFuY2VkLVdlYi1BcHAifQ.XCZCr_ynjZs9mwCyL3ZyxdoQJHPdKUGHFv-nzy5Qb7J8NF6D2KtAfIHPNVsSUFcz",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"type\":1,\n    \"content\":{\n        \"title\": \"slide title changed\",\n        \"meta\":\"slide meta changed\",\n        \"options\": [\n            {\"id\":18,\"name\":\"new option name\",\"image\":\"gimme a url\"}\n        ]\n    }\n}",
+							"raw": "{\n    \"type\": 9,\n    \"content\": {\n        \"title\": \"slide title changed\",\n        \"meta\": \"paragraph content meta changed\",\n        \"paragraph\": {\n            \"id\": 1,\n            \"heading\": \"new paragraph heading\",\n            \"text\": \"Hello world\",\n            \"image\": \"gimme a url\"\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -572,27 +859,166 @@
 							}
 						},
 						"url": {
-							"raw": "{{kahootHost}}/{{v1}}/presentation/91424173/slide/29059341/edit?content_id=47526324",
+							"raw": "{{kahootHost}}/{{v1}}/presentation/81554810/slide/50442189/edit?content_id=79101554",
 							"host": [
 								"{{kahootHost}}"
 							],
 							"path": [
 								"{{v1}}",
 								"presentation",
-								"91424173",
+								"81554810",
 								"slide",
-								"29059341",
+								"50442189",
 								"edit"
 							],
 							"query": [
 								{
 									"key": "content_id",
-									"value": "47526324"
+									"value": "79101554"
 								}
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Update multiple choices",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNyIsImVtYWlsIjoiYmVuc2VuLnBhY2V5QGZhbGx0cmFjay5uZXQiLCJleHAiOjE2NzE1MTU2NTYsImlhdCI6MTY3MTM0Mjg1NiwiaXNzIjoiMjAyMi0xOS0xMS0xOUtUUE0zLUFkdmFuY2VkLVdlYi1BcHAifQ.XCZCr_ynjZs9mwCyL3ZyxdoQJHPdKUGHFv-nzy5Qb7J8NF6D2KtAfIHPNVsSUFcz",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"type\": 1,\n    \"content\": {\n        \"title\": \"new multiple choice title\",\n        \"meta\": \"slide meta changed\",\n        \"options\": [\n            {\n                \"id\": 5,\n                \"name\": \"new option name\",\n                \"image\": \"gimme a url\"\n            }\n        ]\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{kahootHost}}/{{v1}}/presentation/81554810/slide/73308794/edit?content_id=46022742",
+									"host": [
+										"{{kahootHost}}"
+									],
+									"path": [
+										"{{v1}}",
+										"presentation",
+										"81554810",
+										"slide",
+										"73308794",
+										"edit"
+									],
+									"query": [
+										{
+											"key": "content_id",
+											"value": "46022742"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "Update heading",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNyIsImVtYWlsIjoiYmVuc2VuLnBhY2V5QGZhbGx0cmFjay5uZXQiLCJleHAiOjE2NzE1MTU2NTYsImlhdCI6MTY3MTM0Mjg1NiwiaXNzIjoiMjAyMi0xOS0xMS0xOUtUUE0zLUFkdmFuY2VkLVdlYi1BcHAifQ.XCZCr_ynjZs9mwCyL3ZyxdoQJHPdKUGHFv-nzy5Qb7J8NF6D2KtAfIHPNVsSUFcz",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"type\": 8,\n    \"content\": {\n        \"title\": \"new heading title\",\n        \"meta\": \"slide meta changed\",\n        \"heading\": {\n            \"id\": 1,\n            \"heading\": \"ultra big heading\",\n            \"sub_heading\": \"small heading\",\n            \"image\": \"gimme a url\"\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{kahootHost}}/{{v1}}/presentation/81554810/slide/54054521/edit?content_id=59213066",
+									"host": [
+										"{{kahootHost}}"
+									],
+									"path": [
+										"{{v1}}",
+										"presentation",
+										"81554810",
+										"slide",
+										"54054521",
+										"edit"
+									],
+									"query": [
+										{
+											"key": "content_id",
+											"value": "59213066"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "Update paragraph",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNyIsImVtYWlsIjoiYmVuc2VuLnBhY2V5QGZhbGx0cmFjay5uZXQiLCJleHAiOjE2NzE1MTU2NTYsImlhdCI6MTY3MTM0Mjg1NiwiaXNzIjoiMjAyMi0xOS0xMS0xOUtUUE0zLUFkdmFuY2VkLVdlYi1BcHAifQ.XCZCr_ynjZs9mwCyL3ZyxdoQJHPdKUGHFv-nzy5Qb7J8NF6D2KtAfIHPNVsSUFcz",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"type\": 9,\n    \"content\": {\n        \"title\": \"slide title changed\",\n        \"meta\": \"paragraph content meta changed\",\n        \"paragraph\": {\n            \"id\": 1,\n            \"heading\": \"new paragraph heading\",\n            \"text\": \"Hello world\",\n            \"image\": \"gimme a url\"\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{kahootHost}}/{{v1}}/presentation/81554810/slide/50442189/edit?content_id=79101554",
+									"host": [
+										"{{kahootHost}}"
+									],
+									"path": [
+										"{{v1}}",
+										"presentation",
+										"81554810",
+										"slide",
+										"50442189",
+										"edit"
+									],
+									"query": [
+										{
+											"key": "content_id",
+											"value": "79101554"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
 				},
 				{
 					"name": "Delete slide",

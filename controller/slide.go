@@ -75,10 +75,23 @@ func (s *slideController) CreateSlide(c *gin.Context) {
 		return
 	}
 
-	options := content.Options
-	err = s.slideService.CreateOption(contentId, options)
+	switch slide.Type {
+	case 1:
+		options := content.Options
+		err = s.slideService.CreateOption(contentId, options)
+	case 8:
+		heading := content.Heading
+		err = s.slideService.CreateHeading(contentId, heading)
+	case 9:
+		paragraph := content.Paragraph
+		err = s.slideService.CreateParagraph(contentId, paragraph)
+	default:
+		s.logger.Warn("Create slide was interrupted")
+		return
+	}
+
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": "failed to create options"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": "failed to create slide content"})
 		s.logger.Error(err.Error())
 		return
 	}
@@ -117,9 +130,20 @@ func (s *slideController) UpdateSlide(c *gin.Context) {
 		return
 	}
 
-	_, err = s.slideService.UpdateOptions(contentId, slide.Content.Options)
+	switch slide.Type {
+	case 1:
+		_, err = s.slideService.UpdateOptions(contentId, slide.Content.Options)
+	case 8:
+		_, err = s.slideService.UpdateHeading(contentId, slide.Content.Heading)
+	case 9:
+		_, err = s.slideService.UpdateParagraph(contentId, slide.Content.Paragraph)
+	default:
+		s.logger.Warn("Update slide was interrupted")
+		return
+	}
+
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "failed to update options"})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "failed to update sub-content"})
 		s.logger.Error(err.Error())
 		return
 	}

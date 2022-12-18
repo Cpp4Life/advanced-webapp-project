@@ -44,6 +44,24 @@ CREATE TABLE `options`
     `total_votes` INT          DEFAULT 0
 ) DEFAULT CHARSET = utf8mb4;
 
+CREATE TABLE `headings`
+(
+    `id`          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `heading`     VARCHAR(150) DEFAULT '',
+    `sub_heading` VARCHAR(500) DEFAULT '',
+    `image`       varchar(250) DEFAULT '',
+    `content_id`  BIGINT
+) DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE `paragraphs`
+(
+    `id`         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `heading`    VARCHAR(150) DEFAULT '',
+    `text`       VARCHAR(800) DEFAULT '',
+    `image`      varchar(250) DEFAULT '',
+    `content_id` BIGINT
+) DEFAULT CHARSET = utf8mb4;
+
 ALTER TABLE `presentations`
     ADD CONSTRAINT `pres_users_id_fk` FOREIGN KEY (`owner`) REFERENCES `users` (`id`)
         ON DELETE SET NULL;
@@ -66,4 +84,12 @@ ALTER TABLE `contents`
 
 ALTER TABLE `options`
     ADD CONSTRAINT `options_contents_id_fk` FOREIGN KEY (`content_id`) REFERENCES `contents` (`id`)
+        ON DELETE SET NULL;
+
+ALTER TABLE `headings`
+    ADD CONSTRAINT `headings_contents_id_fk` FOREIGN KEY (`content_id`) REFERENCES `contents` (`id`)
+        ON DELETE SET NULL;
+
+ALTER TABLE `paragraphs`
+    ADD CONSTRAINT `paragraphs_contents_id_fk` FOREIGN KEY (`content_id`) REFERENCES `contents` (`id`)
         ON DELETE SET NULL;

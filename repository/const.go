@@ -104,6 +104,14 @@ const (
 		"(name, image, content_id) " +
 		"VALUES (?, ?, ?);"
 
+	stmtInsertHeading = "INSERT INTO `headings` " +
+		"(heading, sub_heading, image, content_id) " +
+		"VALUES (?, ?, ?, ?);"
+
+	stmtInsertParagraph = "INSERT INTO `paragraphs` " +
+		"(heading, text, image, content_id) " +
+		"VALUES (?, ?, ?, ?);"
+
 	stmtUpdateSlide = "UPDATE `slides` " +
 		"SET slide_type = ? " +
 		"WHERE pres_id = ? AND id = ?;"
@@ -114,6 +122,14 @@ const (
 
 	stmtUpdateOption = "UPDATE `options` " +
 		"SET name = ?, image = ? " +
+		"WHERE content_id = ? AND id = ?;"
+
+	stmtUpdateHeading = "UPDATE `headings` " +
+		"SET heading = ?, sub_heading = ?, image = ? " +
+		"WHERE content_id = ? AND id = ?;"
+
+	stmtUpdateParagraph = "UPDATE `paragraphs` " +
+		"SET heading = ?, text = ?, image = ? " +
 		"WHERE content_id = ? AND id = ?;"
 
 	stmtSelectAllSlides = "SELECT s.id, s.slide_type, c.id, c.title, c.meta, o.id, o.name, o.image, o.total_votes " +

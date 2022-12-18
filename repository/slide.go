@@ -11,10 +11,14 @@ type ISlideRepo interface {
 	InsertSlide(slide *model.Slide) error
 	InsertContent(slideId string, content *model.Content) error
 	InsertOption(contentId string, options []*model.Option) error
+	InsertHeading(contentId string, heading *model.Heading) error
+	InsertParagraph(contentId string, paragraph *model.Paragraph) error
 	UpdateSlide(presId string, slide model.Slide) (int64, error)
 	UpdateContent(slideId string, content model.Content) (int64, error)
 	UpdateOptions(contentId string, options []*model.Option) (int64, error)
 	UpdateOptionVote(contentId string, optionId string) (int64, error)
+	UpdateHeading(contentId string, heading *model.Heading) (int64, error)
+	UpdateParagraph(contentId string, paragraph *model.Paragraph) (int64, error)
 	DeleteSlide(presId, slideId string) (int64, error)
 }
 
@@ -111,6 +115,30 @@ func (db *slideRepo) InsertOption(contentId string, options []*model.Option) err
 	return nil
 }
 
+func (db *slideRepo) InsertHeading(contentId string, heading *model.Heading) error {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	_, err := db.conn.ExecContext(ctx, stmtInsertHeading, heading.Heading, heading.SubHeading, heading.Image, contentId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *slideRepo) InsertParagraph(contentId string, paragraph *model.Paragraph) error {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	_, err := db.conn.ExecContext(ctx, stmtInsertParagraph, paragraph.Heading, paragraph.Text, paragraph.Image, contentId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (db *slideRepo) UpdateSlide(presId string, slide model.Slide) (int64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
@@ -156,6 +184,30 @@ func (db *slideRepo) UpdateOptionVote(contentId string, optionId string) (int64,
 	res, err := db.conn.ExecContext(ctx, stmtUpdateOptionVote, optionId, contentId)
 	if err != nil {
 		return -1, err
+	}
+
+	return res.RowsAffected()
+}
+
+func (db *slideRepo) UpdateHeading(contentId string, heading *model.Heading) (int64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	res, err := db.conn.ExecContext(ctx, stmtUpdateHeading, heading.Heading, heading.SubHeading, heading.Image, contentId, heading.Id)
+	if err != nil {
+		return -1, err
+	}
+
+	return res.RowsAffected()
+}
+
+func (db *slideRepo) UpdateParagraph(contentId string, paragraph *model.Paragraph) (int64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	res, err := db.conn.ExecContext(ctx, stmtUpdateParagraph, paragraph.Heading, paragraph.Text, paragraph.Image, contentId, paragraph.Id)
+	if err != nil {
+		return -1, nil
 	}
 
 	return res.RowsAffected()
