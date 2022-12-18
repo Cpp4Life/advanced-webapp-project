@@ -90,7 +90,11 @@ const (
 		"SET name = ?, modified_at = ? " +
 		"WHERE id = ?; "
 
-	stmtDeletePresentation = "DELETE FROM `presentations` WHERE id = ?;"
+	stmtDeletePresentation = "DELETE `p`, `s`, `c` " +
+		"FROM `presentations` p " +
+		"JOIN slides s on p.id = s.pres_id " +
+		"JOIN contents c on s.id = c.slide_id " +
+		"WHERE p.id = ?;"
 
 	stmtInsertSlide = "INSERT INTO `slides` " +
 		"(id, pres_id, slide_type) " +
@@ -132,10 +136,27 @@ const (
 		"SET heading = ?, text = ?, image = ? " +
 		"WHERE content_id = ? AND id = ?;"
 
-	stmtSelectAllSlides = "SELECT s.id, s.slide_type, c.id, c.title, c.meta, o.id, o.name, o.image, o.total_votes " +
-		"FROM `slides` s " +
-		"JOIN `contents` c on s.id = c.slide_id " +
-		"JOIN `options` o on c.id = o.content_id " +
+	//stmtSelectAllSlides = "SELECT s.id, s.slide_type, c.id, c.title, c.meta, o.id, o.name, o.image, o.total_votes " +
+	//	"FROM `slides` s " +
+	//	"JOIN `contents` c on s.id = c.slide_id " +
+	//	"JOIN `options` o on c.id = o.content_id " +
+	//	"WHERE s.pres_id = ?;"
+
+	stmtSelectAllSlides = "WITH `sub-contents`(id, heading, sub_heading, image, total_votes, content_id) AS " +
+		"( " +
+		"    SELECT o.id, o.name, '', o.image, o.total_votes, content_id " +
+		"    FROM `options` o " +
+		"    UNION " +
+		"    SELECT h.id, h.heading, h.sub_heading, h.image, '', content_id " +
+		"    FROM `headings` h " +
+		"    UNION " +
+		"    SELECT p.id, p.heading, p.text, p.image, '', content_id " +
+		"    FROM `paragraphs` p " +
+		") " +
+		"SELECT s.id, s.slide_type, c.id, c.title, c.meta, sc.id, sc.heading, sc.sub_heading, sc.image, sc.total_votes " +
+		"FROM slides s " +
+		"JOIN contents c on s.id = c.slide_id " +
+		"JOIN `sub-contents` sc on c.id = sc.content_id " +
 		"WHERE s.pres_id = ?;"
 
 	stmtUpdateOptionVote = "UPDATE `options` " +

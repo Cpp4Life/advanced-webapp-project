@@ -2,6 +2,7 @@ package repository
 
 import (
 	"advanced-webapp-project/model"
+	"advanced-webapp-project/utils"
 	"context"
 	"database/sql"
 )
@@ -42,11 +43,22 @@ func (db *slideRepo) FindAllSlides(presId string) ([]*model.Slide, error) {
 	}
 	defer rows.Close()
 
+	type subContent struct {
+		Id         uint
+		Heading    string
+		SubHeading string
+		Image      string
+		TotalVotes string
+	}
+
 	var slides []*model.Slide
 	for rows.Next() {
 		var slide model.Slide
 		var content model.Content
 		var option model.Option
+		var heading model.Heading
+		var paragraph model.Paragraph
+		var sc subContent
 		var index = len(slides) - 1
 		if err = rows.Scan(
 			&slide.Id,
@@ -54,17 +66,38 @@ func (db *slideRepo) FindAllSlides(presId string) ([]*model.Slide, error) {
 			&content.Id,
 			&content.Title,
 			&content.Meta,
-			&option.Id,
-			&option.Name,
-			&option.Image,
-			&option.TotalVotes,
+			&sc.Id,
+			&sc.Heading,
+			&sc.SubHeading,
+			&sc.Image,
+			&sc.TotalVotes,
 		); err != nil {
 			return nil, err
 		}
 
-		content.Options = append(content.Options, &option)
-		slide.Content = &content
+		switch slide.Type {
+		case 1:
+			option.Id = sc.Id
+			option.Name = sc.Heading
+			option.Image = sc.Image
+			option.TotalVotes = utils.Str2Uint(sc.TotalVotes)
+			content.Options = append(content.Options, &option)
+		case 8:
+			heading.Id = sc.Id
+			heading.Heading = sc.Heading
+			heading.SubHeading = sc.SubHeading
+			heading.Image = sc.Image
+			content.Heading = &heading
+		case 9:
+			paragraph.Id = sc.Id
+			paragraph.Heading = sc.Heading
+			paragraph.Text = sc.SubHeading
+			paragraph.Image = sc.Image
+			content.Paragraph = &paragraph
+		default:
+		}
 
+		slide.Content = &content
 		if len(slides) == 0 {
 			slides = append(slides, &slide)
 		} else if slides[index].Id == slide.Id {
