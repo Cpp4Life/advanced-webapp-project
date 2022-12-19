@@ -41,6 +41,7 @@ var upgrader = websocket.Upgrader{
 // Client is a middleman between the websocket connection and the hub
 type Client struct {
 	slideSvc service.ISlideService
+	roomId   string
 	hub      *Hub
 
 	// The websocket connection
@@ -75,7 +76,7 @@ func (c *Client) readPump() {
 			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
-		fmt.Printf("[MESSAGE]: %+v typeof %T\n", message, message)
+		fmt.Printf("\n[MESSAGE]: %s typeof %T\n", message, message)
 		type req struct {
 			Id      string `json:"id"`
 			Option  string `json:"option"`
@@ -83,9 +84,9 @@ func (c *Client) readPump() {
 		}
 		var body req
 		_ = json.Unmarshal(message, &body)
-		fmt.Printf("\nJSON: %s\n", body)
+		fmt.Printf("JSON: %s\n\n", body)
 		_, _ = c.slideSvc.UpdateOptionVote(body.Content, body.Option)
-		c.hub.broadcast <- message
+		c.hub.broadcast <- incomingMessage{roomId: c.roomId, data: message}
 	}
 }
 
@@ -136,13 +137,13 @@ func (c *Client) writePump() {
 }
 
 // ServeWs handles websocket requests from the peer
-func ServeWs(slideSvc service.ISlideService, hub *Hub, w http.ResponseWriter, r *http.Request) {
+func ServeWs(slideSvc service.ISlideService, roomId string, hub *Hub, w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	client := &Client{slideSvc: slideSvc, hub: hub, conn: conn, send: make(chan []byte, 256)}
+	client := &Client{slideSvc: slideSvc, roomId: roomId, hub: hub, conn: conn, send: make(chan []byte, 256)}
 	client.hub.register <- client
 
 	// Allow collection of memory referenced by the caller by doing all work in
