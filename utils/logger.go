@@ -7,6 +7,13 @@ import (
 	"strings"
 )
 
+const (
+	reset  = "\033[0m"
+	blue   = "\033[34m"
+	yellow = "\033[33m"
+	red    = "\033[31m"
+)
+
 type Logger struct {
 	infoLog  *log.Logger
 	warnLog  *log.Logger
@@ -16,23 +23,23 @@ type Logger struct {
 func NewLogger() *Logger {
 	flags := log.LstdFlags
 	return &Logger{
-		infoLog:  log.New(os.Stdout, "\033[34m ✓ [INFO] ", flags),
-		warnLog:  log.New(os.Stdout, "\033[33m ! [WARN] ", flags),
-		errorLog: log.New(os.Stderr, "\033[31m ⨯ [ERROR] ", flags),
+		infoLog:  log.New(os.Stdout, blue+" ✓ [INFO] ", flags),
+		warnLog:  log.New(os.Stdout, yellow+" ! [WARN] ", flags),
+		errorLog: log.New(os.Stderr, red+" ⨯ [ERROR] ", flags),
 	}
 }
 
 func (l *Logger) Info(v ...any) {
-	l.infoLog.Println(v...)
+	l.infoLog.Println(v, reset)
 }
 
 func (l *Logger) Warn(v ...any) {
-	l.warnLog.Println(v...)
+	l.warnLog.Println(v, reset)
 }
 
 func (l *Logger) Error(v ...any) {
 	_, filename, line, _ := runtime.Caller(1)
 	lastSlashIdx := strings.LastIndex(filename, "/")
 	filename = filename[lastSlashIdx+1:]
-	l.errorLog.Printf("%s, line #%d, %+v", filename, line, v)
+	l.errorLog.Printf("%s, line #%d, %+v %s\n", filename, line, v, reset)
 }
