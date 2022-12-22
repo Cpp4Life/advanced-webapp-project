@@ -8,6 +8,7 @@ import (
 type IUserService interface {
 	GetProfile(id string) (*model.User, error)
 	UpdateProfile(id string, user model.User) (int64, error)
+	ChangePassword(id, password string) (int64, error)
 }
 
 type userService struct {
@@ -26,4 +27,8 @@ func (svc *userService) GetProfile(id string) (*model.User, error) {
 
 func (svc *userService) UpdateProfile(id string, user model.User) (int64, error) {
 	return svc.userRepo.ModifyUserById(id, user)
+}
+
+func (svc *userService) ChangePassword(id, password string) (int64, error) {
+	return svc.userRepo.UpdatePassword(id, password)
 }

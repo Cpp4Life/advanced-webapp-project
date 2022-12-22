@@ -5,12 +5,14 @@ import (
 	"advanced-webapp-project/service"
 	"advanced-webapp-project/utils"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 )
 
 type IUserController interface {
 	GetProfile(c *gin.Context)
 	UpdateProfile(c *gin.Context)
+	ChangePassword(c *gin.Context)
 }
 
 type userController struct {
@@ -74,6 +76,47 @@ func (u *userController) UpdateProfile(c *gin.Context) {
 	c.JSON(http.StatusNoContent, map[string]any{
 		"message": "Update successfully",
 	})
+	return
+}
+
+func (u *userController) ChangePassword(c *gin.Context) {
+	type req struct {
+		OldPassword string `json:"old_password"`
+		NewPassword string `json:"new_password"`
+	}
+
+	jsonData := req{}
+	if err := c.ShouldBindJSON(&jsonData); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": err.Error()})
+		u.logger.Error(err.Error())
+		return
+	}
+
+	if jsonData.OldPassword == "" || jsonData.NewPassword == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": "old password and new password must be filled in"})
+		return
+	}
+
+	if jsonData.OldPassword == jsonData.NewPassword {
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": "old password must not be the same as new password"})
+		return
+	}
+
+	userId := u.getUserId(c.GetHeader("Authorization"))
+	userProfile, _ := u.userService.GetProfile(userId)
+	if err := bcrypt.CompareHashAndPassword([]byte(userProfile.SavedPassword), []byte(jsonData.OldPassword)); err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]any{"message": "passwords do not match"})
+		return
+	}
+
+	_, err := u.userService.ChangePassword(userId, jsonData.NewPassword)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "failed to change password"})
+		u.logger.Error(err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]any{"message": "updated successfully"})
 	return
 }
 
