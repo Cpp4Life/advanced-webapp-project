@@ -46,6 +46,7 @@ var (
 	slideService = service.NewSlideService(slideRepo)
 
 	authController  = controller.NewAuthHandler(logger, jwtService, authService, mailService)
+	oauthController = controller.NewOauthController(logger)
 	userController  = controller.NewUserController(logger, jwtService, userService, groupService)
 	groupController = controller.NewGroupController(logger, jwtService, groupService, userService, authService, mailService)
 	presController  = controller.NewPresController(logger, jwtService, presService, userService)
@@ -65,7 +66,13 @@ func main() {
 		authRoutes.POST("/login", authController.Login)
 		authRoutes.POST("/register", authController.Register)
 		authRoutes.GET("/verify-email/:code", authController.VerifyEmail)
-		authRoutes.GET("/forgot-password", authController.ForgotPassword)
+		authRoutes.PUT("/forgot-password", authController.ForgotPassword)
+	}
+
+	oauthRoutes := router.Group(fmt.Sprintf("%s/oauth", api))
+	{
+		oauthRoutes.GET("/google/login", oauthController.GoogleOauthLogin)
+		oauthRoutes.GET("/google/callback", oauthController.GoogleOauthCallback)
 	}
 
 	userRoutes := router.Group(fmt.Sprintf("%s/accounts", api)).Use(middleware.AuthorizeJWT(jwtService, logger))
@@ -105,6 +112,7 @@ func main() {
 	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	router.StaticFS("/public", http.Dir("templates"))
 
 	// start websocket server
 	hub := websocket.NewHub()
