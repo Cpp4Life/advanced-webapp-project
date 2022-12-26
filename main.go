@@ -46,7 +46,7 @@ var (
 	slideService = service.NewSlideService(slideRepo)
 
 	authController  = controller.NewAuthHandler(logger, jwtService, authService, mailService)
-	oauthController = controller.NewOauthController(logger)
+	oauthController = controller.NewOauthController(logger, jwtService, authService)
 	userController  = controller.NewUserController(logger, jwtService, userService, groupService)
 	groupController = controller.NewGroupController(logger, jwtService, groupService, userService, authService, mailService)
 	presController  = controller.NewPresController(logger, jwtService, presService, userService)

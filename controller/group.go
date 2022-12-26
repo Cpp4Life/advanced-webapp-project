@@ -116,6 +116,11 @@ func (g *groupController) GetJoinedGroupsByUserId(c *gin.Context) {
 		return
 	}
 
+	if groups == nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "no groups found!"})
+		return
+	}
+
 	c.JSON(http.StatusOK, map[string]any{
 		"groups_data": groups,
 	})

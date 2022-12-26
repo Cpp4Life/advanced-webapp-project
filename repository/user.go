@@ -48,7 +48,7 @@ func (db *userRepo) InsertUser(user *model.User) (int64, error) {
 		user.ProfileImg,
 		user.UserTel,
 		user.Email,
-		false,
+		user.IsVerified,
 		user.VerificationCode,
 		time.Now(),
 		time.Now(),

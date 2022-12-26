@@ -2,16 +2,20 @@ package controller
 
 import (
 	"advanced-webapp-project/config"
+	"advanced-webapp-project/model"
+	"advanced-webapp-project/service"
 	"advanced-webapp-project/utils"
 	"context"
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/goccy/go-json"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -30,11 +34,13 @@ type IOauthController interface {
 }
 
 type oauthController struct {
-	logger *utils.Logger
+	logger      *utils.Logger
+	jwtService  service.IJWTService
+	authService service.IAuthService
 }
 
-func NewOauthController(logger *utils.Logger) *oauthController {
-	return &oauthController{logger: logger}
+func NewOauthController(logger *utils.Logger, jwtSvc service.IJWTService, authSvc service.IAuthService) *oauthController {
+	return &oauthController{logger: logger, jwtService: jwtSvc, authService: authSvc}
 }
 
 const oauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v2/userinfo?access_token="
@@ -61,8 +67,38 @@ func (oa *oauthController) GoogleOauthCallback(c *gin.Context) {
 		return
 	}
 
-	oa.logger.Info(string(data))
-	fmt.Fprintf(c.Writer, "UserInfo: %s\n", data)
+	type googleRes struct {
+		Id            string `json:"id"`
+		Email         string `json:"email"`
+		VerifiedEmail bool   `json:"verified_email"`
+		Name          string `json:"name"`
+		GivenName     string `json:"given_name"`
+		Picture       string `json:"picture"`
+		Locale        string `json:"locale"`
+	}
+	var googleInfo googleRes
+	_ = json.Unmarshal(data, &googleInfo)
+
+	var newUser model.User
+
+	userData, _ := oa.authService.GetUserByEmail(googleInfo.Email)
+	if userData == nil {
+		newUser.FullName = googleInfo.Name
+		newUser.Email = googleInfo.Email
+		newUser.ProfileImg = googleInfo.Picture
+		newUser.IsVerified = true
+		userId, _ := oa.authService.CreateUser(&newUser)
+		newUser.Id = uint(userId)
+	} else {
+		newUser = *userData
+	}
+	oa.logger.Info(newUser)
+
+	generatedToken := oa.jwtService.GenerateToken(strconv.Itoa(int(newUser.Id)), newUser.Email)
+	c.JSON(http.StatusOK, map[string]any{
+		"user":  userData,
+		"token": generatedToken,
+	})
 }
 
 func generateStateOauthCookie(w http.ResponseWriter) string {
