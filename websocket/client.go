@@ -77,15 +77,20 @@ func (c *Client) readPump() {
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
 		fmt.Printf("\n[MESSAGE]: %s typeof %T\n", message, message)
+
 		type req struct {
 			Id      string `json:"id"`
 			Option  string `json:"option"`
 			Content string `json:"content"`
 		}
 		var body req
-		_ = json.Unmarshal(message, &body)
-		fmt.Printf("JSON: %s\n\n", body)
-		_, _ = c.slideSvc.UpdateOptionVote(body.Content, body.Option)
+		if err = json.Unmarshal(message, &body); err == nil {
+			fmt.Printf("JSON: %s\n\n", body)
+			_, _ = c.slideSvc.UpdateOptionVote(body.Content, body.Option)
+		}
+
+		slide, _ := c.slideSvc.GetSlideById(c.roomId)
+		message, _ = json.Marshal(*slide)
 		c.hub.broadcast <- incomingMessage{roomId: c.roomId, data: message}
 	}
 }

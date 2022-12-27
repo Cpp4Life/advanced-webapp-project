@@ -157,7 +157,7 @@ const (
 		"FROM slides s " +
 		"JOIN contents c on s.id = c.slide_id " +
 		"JOIN `sub-contents` sc on c.id = sc.content_id " +
-		"WHERE s.pres_id = ?;"
+		"WHERE s.pres_id = ? OR s.id = ?;"
 
 	stmtUpdateOptionVote = "UPDATE `options` " +
 		"SET `total_votes` = `total_votes` + 1 " +

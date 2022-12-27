@@ -7,6 +7,7 @@ import (
 
 type ISlideService interface {
 	GetAllSlides(presId string) ([]*model.Slide, error)
+	GetSlideById(slideId string) (*model.Slide, error)
 	CreateSlide(slide *model.Slide) error
 	CreateContent(slideId string, content *model.Content) error
 	CreateOption(contentId string, options []*model.Option) error
@@ -33,6 +34,10 @@ func NewSlideService(slideRepo repository.ISlideRepo) *slideService {
 
 func (svc *slideService) GetAllSlides(presId string) ([]*model.Slide, error) {
 	return svc.slideRepo.FindAllSlides(presId)
+}
+
+func (svc *slideService) GetSlideById(slideId string) (*model.Slide, error) {
+	return svc.slideRepo.FindSlideById(slideId)
 }
 
 func (svc *slideService) CreateSlide(slide *model.Slide) error {
