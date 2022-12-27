@@ -38,7 +38,7 @@ func (db *slideRepo) FindAllSlides(presId string) ([]*model.Slide, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	rows, err := db.conn.QueryContext(ctx, stmtSelectAllSlides, presId, "")
+	rows, err := db.conn.QueryContext(ctx, stmtSelectAllSlides, presId)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +115,7 @@ func (db *slideRepo) FindSlideById(slideId string) (*model.Slide, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	rows, err := db.conn.QueryContext(ctx, stmtSelectAllSlides, "", slideId)
+	rows, err := db.conn.QueryContext(ctx, stmtSelectSlideById, slideId)
 	if err != nil {
 		return nil, err
 	}

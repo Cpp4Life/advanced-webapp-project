@@ -157,7 +157,24 @@ const (
 		"FROM slides s " +
 		"JOIN contents c on s.id = c.slide_id " +
 		"JOIN `sub-contents` sc on c.id = sc.content_id " +
-		"WHERE s.pres_id = ? OR s.id = ?;"
+		"WHERE s.pres_id = ?;"
+
+	stmtSelectSlideById = "WITH `sub-contents`(id, heading, sub_heading, image, total_votes, content_id) AS " +
+		"( " +
+		"    SELECT o.id, o.name, '', o.image, o.total_votes, content_id " +
+		"    FROM `options` o " +
+		"    UNION " +
+		"    SELECT h.id, h.heading, h.sub_heading, h.image, '', content_id " +
+		"    FROM `headings` h " +
+		"    UNION " +
+		"    SELECT p.id, p.heading, p.text, p.image, '', content_id " +
+		"    FROM `paragraphs` p " +
+		") " +
+		"SELECT s.id, s.slide_type, c.id, c.title, c.meta, sc.id, sc.heading, sc.sub_heading, sc.image, sc.total_votes " +
+		"FROM slides s " +
+		"JOIN contents c on s.id = c.slide_id " +
+		"JOIN `sub-contents` sc on c.id = sc.content_id " +
+		"WHERE s.id = ?;"
 
 	stmtUpdateOptionVote = "UPDATE `options` " +
 		"SET `total_votes` = `total_votes` + 1 " +
