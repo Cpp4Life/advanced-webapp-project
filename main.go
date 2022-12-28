@@ -118,7 +118,7 @@ func main() {
 	hub := websocket.NewHub()
 	go hub.Run()
 	router.GET("/ws", func(c *gin.Context) {
-		roomId := c.Query("slideId")
+		roomId := c.Query("presId")
 		logger.Info("slide id: ", roomId)
 		websocket.ServeWs(slideService, roomId, hub, c.Writer, c.Request)
 	})

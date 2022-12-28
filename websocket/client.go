@@ -89,8 +89,10 @@ func (c *Client) readPump() {
 			_, _ = c.slideSvc.UpdateOptionVote(body.Content, body.Option)
 		}
 
-		slide, _ := c.slideSvc.GetSlideById(c.roomId)
-		message, _ = json.Marshal(*slide)
+		slide, err := c.slideSvc.GetSlideById(string(message))
+		if slide != nil {
+			message, _ = json.Marshal(*slide)
+		}
 		c.hub.broadcast <- incomingMessage{roomId: c.roomId, data: message}
 	}
 }
