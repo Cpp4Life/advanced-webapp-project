@@ -3,8 +3,6 @@ package utils
 import (
 	"log"
 	"os"
-	"runtime"
-	"strings"
 )
 
 const (
@@ -21,7 +19,7 @@ type Logger struct {
 }
 
 func NewLogger() *Logger {
-	flags := log.LstdFlags
+	flags := log.LstdFlags | log.Lshortfile
 	return &Logger{
 		infoLog:  log.New(os.Stdout, blue+" ✓ [INFO] ", flags),
 		warnLog:  log.New(os.Stdout, yellow+" ! [WARN] ", flags),
@@ -30,16 +28,13 @@ func NewLogger() *Logger {
 }
 
 func (l *Logger) Info(v ...any) {
-	l.infoLog.Println(v, reset)
+	l.infoLog.Printf("%+v %s\n", v, reset)
 }
 
 func (l *Logger) Warn(v ...any) {
-	l.warnLog.Println(v, reset)
+	l.warnLog.Printf("%+v %s\n", v, reset)
 }
 
 func (l *Logger) Error(v ...any) {
-	_, filename, line, _ := runtime.Caller(1)
-	lastSlashIdx := strings.LastIndex(filename, "/")
-	filename = filename[lastSlashIdx+1:]
-	l.errorLog.Printf("%s, line #%d, %+v %s\n", filename, line, v, reset)
+	l.errorLog.Printf("%+v %s\n", v, reset)
 }

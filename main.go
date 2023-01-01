@@ -61,6 +61,10 @@ func main() {
 	router := gin.Default()
 	router.Use(cors.New(middleware.InitCors()))
 
+	router.GET("/api", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"Version": "0.0.1"})
+	})
+
 	authRoutes := router.Group(fmt.Sprintf("%s/auth", api))
 	{
 		authRoutes.POST("/login", authController.Login)
