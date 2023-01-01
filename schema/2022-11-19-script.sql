@@ -2,18 +2,18 @@
 
 CREATE TABLE `users`
 (
-    `id`          BIGINT AUTO_INCREMENT PRIMARY KEY,
-    `username`    VARCHAR(50)  NOT NULL,
-    `password`    VARCHAR(250) NOT NULL,
-    `full_name`   VARCHAR(50)  NOT NULL,
-    `email`       VARCHAR(50)  NOT NULL,
-    `address`     VARCHAR(250) DEFAULT '',
-    `profile_img` VARCHAR(250) DEFAULT '',
-    `user_tel`    VARCHAR(13)  DEFAULT '',
-    `is_verified` BOOLEAN DEFAULT FALSE NOT NULL,
-    `verification_code` VARCHAR(50) DEFAULT '',
-    `created_at`  DATETIME,
-    `updated_at`  DATETIME
+    `id`                BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `username`          VARCHAR(50)                NOT NULL,
+    `password`          VARCHAR(250)               NOT NULL,
+    `full_name`         VARCHAR(50)                NOT NULL,
+    `email`             VARCHAR(50)                NOT NULL,
+    `address`           VARCHAR(250) DEFAULT '',
+    `profile_img`       VARCHAR(250) DEFAULT '',
+    `user_tel`          VARCHAR(13)  DEFAULT '',
+    `is_verified`       BOOLEAN      DEFAULT FALSE NOT NULL,
+    `verification_code` VARCHAR(50)  DEFAULT '',
+    `created_at`        DATETIME,
+    `updated_at`        DATETIME
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `groups`
@@ -40,6 +40,13 @@ CREATE TABLE `group_members`
     `joined_at` DATETIME NOT NULL,
     `role`      BIGINT   NOT NULL,
     PRIMARY KEY (`member_id`, `group_id`)
+) DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE `group_pres_infos`
+(
+    `group_id` BIGINT PRIMARY KEY,
+    `pres_id`  BIGINT,
+    `user_id`  BIGINT
 ) DEFAULT CHARSET = utf8mb4;
 
 ALTER TABLE `groups`

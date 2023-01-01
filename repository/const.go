@@ -51,6 +51,10 @@ const (
 		"FROM `groups` " +
 		"WHERE owner = ?;"
 
+	stmtSelectGroupPresentationInfo = "SELECT group_id, pres_id, user_id " +
+		"FROM `group_pres_infos` " +
+		"WHERE group_id = ?;"
+
 	stmtSelectJoinedGroupsByUserId = "SELECT g.id, g.name, g.link, g.`desc`, g.created_at, r.title, joined_at " +
 		"FROM `group_members` " +
 		"JOIN `groups` g ON group_members.group_id = g.id " +
@@ -95,6 +99,8 @@ const (
 		"JOIN slides s on p.id = s.pres_id " +
 		"JOIN contents c on s.id = c.slide_id " +
 		"WHERE p.id = ?;"
+
+	stmtReplaceGroupPresentation = "REPLACE INTO `group_pres_infos` VALUES(?, ?, ?)"
 
 	stmtInsertSlide = "INSERT INTO `slides` " +
 		"(id, pres_id, slide_type) " +

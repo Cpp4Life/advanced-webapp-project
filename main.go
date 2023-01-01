@@ -104,6 +104,7 @@ func main() {
 		presRoutes.POST("/create", presController.CreatePresentation)
 		presRoutes.PUT("/:id/edit", presController.UpdatePresentation)
 		presRoutes.DELETE("/delete/:id", presController.DeletePresentation)
+		presRoutes.POST("/:id/group-presentation", presController.PresentGroup)
 		presRoutes.GET("/:id/slides/get-all", slideController.GetAllSlides)
 		presRoutes.POST("/:id/slide/create", slideController.CreateSlide)
 		presRoutes.PUT("/:id/slide/:slide_id/edit", slideController.UpdateSlide)

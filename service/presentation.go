@@ -11,6 +11,7 @@ type IPresService interface {
 	CreatePresentation(pres *model.Pres, userId string) error
 	UpdatePresentation(presId string, data model.Pres) (int64, error)
 	DeletePresentation(presId string) (int64, error)
+	PresentGroup(data model.GroupPresInfo) (int64, error)
 }
 
 type presService struct {
@@ -41,4 +42,8 @@ func (svc *presService) UpdatePresentation(presId string, data model.Pres) (int6
 
 func (svc *presService) DeletePresentation(presId string) (int64, error) {
 	return svc.presRepo.DeletePresentation(presId)
+}
+
+func (svc *presService) PresentGroup(data model.GroupPresInfo) (int64, error) {
+	return svc.presRepo.PresentGroup(data)
 }

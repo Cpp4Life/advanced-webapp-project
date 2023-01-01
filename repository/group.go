@@ -11,6 +11,7 @@ import (
 type IGroupRepo interface {
 	FindAll() ([]*model.Group, error)
 	InsertGroup(group *model.Group, userId string) (int64, error)
+	FindGroupPresentationInfo(groupId string) (*model.GroupPresInfo, error)
 	FindCreatedGroupsByUserId(userId string) ([]*model.Group, error)
 	FindJoinedGroupsByUserId(userId string) ([]*model.GroupUser, error)
 	FindGroupMemberDetailsByGroupId(groupId string) ([]*model.GroupUser, error)
@@ -94,6 +95,23 @@ func (db *groupRepo) InsertGroup(group *model.Group, userId string) (int64, erro
 
 	group.Id = uint(id)
 	return id, nil
+}
+
+func (db *groupRepo) FindGroupPresentationInfo(groupId string) (*model.GroupPresInfo, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	var info model.GroupPresInfo
+	err := db.conn.QueryRowContext(ctx, stmtSelectGroupPresentationInfo, groupId).Scan(
+		&info.GroupId,
+		&info.PresId,
+		&info.UserId,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &info, nil
 }
 
 func (db *groupRepo) FindCreatedGroupsByUserId(userId string) ([]*model.Group, error) {

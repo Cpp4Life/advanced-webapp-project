@@ -100,6 +100,15 @@ func (g *groupController) GetCreatedGroupsByUserId(c *gin.Context) {
 		return
 	}
 
+	for _, group := range groups {
+		groupPresInfo, err := g.groupService.GetGroupPresentationInfo(strconv.Itoa(int(group.Id)))
+		if err != nil {
+			g.logger.Error(err.Error())
+			break
+		}
+		group.GroupPresInfo = groupPresInfo
+	}
+
 	c.JSON(http.StatusOK, map[string]any{
 		"groups_data": groups,
 	})

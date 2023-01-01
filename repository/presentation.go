@@ -14,6 +14,7 @@ type IPresRepo interface {
 	InsertPresentation(pres *model.Pres, userId string) error
 	UpdatePresentation(presId string, data model.Pres) (int64, error)
 	DeletePresentation(presId string) (int64, error)
+	PresentGroup(data model.GroupPresInfo) (int64, error)
 }
 
 type presRepo struct {
@@ -116,6 +117,18 @@ func (db *presRepo) DeletePresentation(presId string) (int64, error) {
 	defer cancel()
 
 	res, err := db.conn.ExecContext(ctx, stmtDeletePresentation, presId)
+	if err != nil {
+		return -1, err
+	}
+
+	return res.RowsAffected()
+}
+
+func (db *presRepo) PresentGroup(data model.GroupPresInfo) (int64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	res, err := db.conn.ExecContext(ctx, stmtReplaceGroupPresentation, data.GroupId, data.PresId, data.UserId)
 	if err != nil {
 		return -1, err
 	}

@@ -15,6 +15,7 @@ type IPresController interface {
 	CreatePresentation(c *gin.Context)
 	UpdatePresentation(c *gin.Context)
 	DeletePresentation(c *gin.Context)
+	PresentGroup(c *gin.Context)
 }
 
 type presController struct {
@@ -131,6 +132,27 @@ func (p *presController) DeletePresentation(c *gin.Context) {
 	})
 
 	return
+}
+
+func (p *presController) PresentGroup(c *gin.Context) {
+	presId := c.Param("id")
+
+	var json model.GroupPresInfo
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"message": "cannot present to group"})
+		p.logger.Error(err.Error())
+		return
+	}
+	json.PresId = utils.Str2Uint(presId)
+
+	_, err := p.presService.PresentGroup(json)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "cannot present to group"})
+		p.logger.Error(err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]any{"message": "present successfully"})
 }
 
 func (p *presController) getUserId(token string) string {
