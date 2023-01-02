@@ -130,7 +130,7 @@ func main() {
 
 	// start http server
 	srv := &http.Server{
-		Addr:    appConfig.HostPort,
+		Addr:    fmt.Sprintf(":%s", appConfig.Port),
 		Handler: router,
 	}
 
