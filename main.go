@@ -131,7 +131,7 @@ func main() {
 
 	// start http server
 	srv := &http.Server{
-		Addr:    appConfig.PORT,
+		Addr:    appConfig.HostPort,
 		Handler: router,
 	}
 
