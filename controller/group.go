@@ -101,11 +101,7 @@ func (g *groupController) GetCreatedGroupsByUserId(c *gin.Context) {
 	}
 
 	for _, group := range groups {
-		groupPresInfo, err := g.groupService.GetGroupPresentationInfo(strconv.Itoa(int(group.Id)))
-		if err != nil {
-			g.logger.Error(err.Error())
-			break
-		}
+		groupPresInfo, _ := g.groupService.GetGroupPresentationInfo(strconv.Itoa(int(group.Id)))
 		group.GroupPresInfo = groupPresInfo
 	}
 
