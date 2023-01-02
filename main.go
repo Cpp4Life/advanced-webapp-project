@@ -1,6 +1,7 @@
 package main
 
 import (
+	"advanced-webapp-project/config"
 	"advanced-webapp-project/controller"
 	"advanced-webapp-project/db"
 	_ "advanced-webapp-project/docs"
@@ -24,13 +25,13 @@ import (
 )
 
 const (
-	PORT = ":7777"
-	api  = "/api/v1"
+	api = "/api/v1"
 )
 
 var (
-	sqlDB  = db.NewSQLDB()
-	logger = utils.NewLogger()
+	appConfig, _ = config.LoadConfig(".")
+	sqlDB        = db.NewSQLDB()
+	logger       = utils.NewLogger()
 
 	userRepo  = repository.NewUserRepo(sqlDB)
 	groupRepo = repository.NewGroupRepo(sqlDB)
@@ -130,7 +131,7 @@ func main() {
 
 	// start http server
 	srv := &http.Server{
-		Addr:    PORT,
+		Addr:    appConfig.PORT,
 		Handler: router,
 	}
 
