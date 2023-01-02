@@ -12,6 +12,7 @@ import (
 	"advanced-webapp-project/websocket"
 	"context"
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -59,7 +60,7 @@ var (
 func main() {
 	defer db.Close(sqlDB)
 	router := gin.Default()
-	router.Use(middleware.InitCors())
+	router.Use(cors.New(middleware.InitCors()))
 
 	router.GET("/api", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"Version": "0.0.1"})
