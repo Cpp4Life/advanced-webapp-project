@@ -129,6 +129,7 @@ func main() {
 		websocket.ServeWs(slideService, roomId, hub, c.Writer, c.Request)
 	})
 
+	logger.Info("Listening and serving HTTP on :", appConfig.Port)
 	// start http server
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", appConfig.Port),
