@@ -105,7 +105,7 @@ func main() {
 	presRoutes := router.Group(fmt.Sprintf("%s/presentation", api)).Use(middleware.AuthorizeJWT(jwtService, logger))
 	{
 		presRoutes.GET("/:id/general", presController.GetPresentationById)
-		presRoutes.GET("/get-all", presController.GetAllPresentations)
+		presRoutes.GET("/get-all", presController.GetAllPresentationsByUserId)
 		presRoutes.POST("/create", presController.CreatePresentation)
 		presRoutes.PUT("/:id/edit", presController.UpdatePresentation)
 		presRoutes.DELETE("/delete/:id", presController.DeletePresentation)

@@ -84,7 +84,9 @@ const (
 	stmtSelectPresentationById = "SELECT id, name, owner, modified_at, created_at " +
 		"FROM `presentations` WHERE id = ?; "
 
-	stmtSelectAllPresentations = "SELECT id, name, owner, modified_at, created_at FROM `presentations`; "
+	stmtSelectAllPresentationsByUserId = "SELECT id, name, modified_at, created_at " +
+		"FROM `presentations` " +
+		"WHERE owner = ?;"
 
 	stmtInsertPresentation = "INSERT INTO `presentations` " +
 		"(id, name, owner, modified_at, created_at) " +
@@ -141,12 +143,6 @@ const (
 	stmtUpdateParagraph = "UPDATE `paragraphs` " +
 		"SET heading = ?, text = ?, image = ? " +
 		"WHERE content_id = ? AND id = ?;"
-
-	//stmtSelectAllSlides = "SELECT s.id, s.slide_type, c.id, c.title, c.meta, o.id, o.name, o.image, o.total_votes " +
-	//	"FROM `slides` s " +
-	//	"JOIN `contents` c on s.id = c.slide_id " +
-	//	"JOIN `options` o on c.id = o.content_id " +
-	//	"WHERE s.pres_id = ?;"
 
 	stmtSelectAllSlides = "WITH `sub-contents`(id, heading, sub_heading, image, total_votes, content_id) AS " +
 		"( " +

@@ -10,7 +10,7 @@ import (
 
 type IPresRepo interface {
 	FindPresentationById(presId string) (*model.Pres, error)
-	FindAllPresentations() ([]*model.Pres, error)
+	FindAllPresentationsByUserId(userId string) ([]*model.Pres, error)
 	InsertPresentation(pres *model.Pres, userId string) error
 	UpdatePresentation(presId string, data model.Pres) (int64, error)
 	DeletePresentation(presId string) (int64, error)
@@ -49,11 +49,11 @@ func (db *presRepo) FindPresentationById(presId string) (*model.Pres, error) {
 	return &pres, nil
 }
 
-func (db *presRepo) FindAllPresentations() ([]*model.Pres, error) {
+func (db *presRepo) FindAllPresentationsByUserId(userId string) ([]*model.Pres, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	rows, err := db.conn.QueryContext(ctx, stmtSelectAllPresentations)
+	rows, err := db.conn.QueryContext(ctx, stmtSelectAllPresentationsByUserId, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,6 @@ func (db *presRepo) FindAllPresentations() ([]*model.Pres, error) {
 		if err = rows.Scan(
 			&pres.Id,
 			&pres.Name,
-			&user.Id,
 			&pres.ModifiedAt,
 			&pres.CreatedAt); err != nil {
 			return nil, errors.New("error scanning")

@@ -100,6 +100,11 @@ func (g *groupController) GetCreatedGroupsByUserId(c *gin.Context) {
 		return
 	}
 
+	if groups == nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "no groups found!"})
+		return
+	}
+
 	for _, group := range groups {
 		groupPresInfo, _ := g.groupService.GetGroupPresentationInfo(strconv.Itoa(int(group.Id)))
 		group.GroupPresInfo = groupPresInfo
@@ -124,6 +129,11 @@ func (g *groupController) GetJoinedGroupsByUserId(c *gin.Context) {
 	if groups == nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "no groups found!"})
 		return
+	}
+
+	for _, group := range groups {
+		groupPresInfo, _ := g.groupService.GetGroupPresentationInfo(strconv.Itoa(int(group.GroupInfo.Id)))
+		group.GroupInfo.GroupPresInfo = groupPresInfo
 	}
 
 	c.JSON(http.StatusOK, map[string]any{

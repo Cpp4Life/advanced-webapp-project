@@ -11,7 +11,7 @@ import (
 
 type IPresController interface {
 	GetPresentationById(c *gin.Context)
-	GetAllPresentations(c *gin.Context)
+	GetAllPresentationsByUserId(c *gin.Context)
 	CreatePresentation(c *gin.Context)
 	UpdatePresentation(c *gin.Context)
 	DeletePresentation(c *gin.Context)
@@ -50,11 +50,17 @@ func (p *presController) GetPresentationById(c *gin.Context) {
 	return
 }
 
-func (p *presController) GetAllPresentations(c *gin.Context) {
-	presList, err := p.presService.GetAllPresentations()
+func (p *presController) GetAllPresentationsByUserId(c *gin.Context) {
+	userId := p.getUserId(c.GetHeader("Authorization"))
+	presList, err := p.presService.GetAllPresentationsByUserId(userId)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "no presentations found!"})
 		p.logger.Error(err.Error())
+		return
+	}
+
+	if presList == nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, map[string]any{"message": "no presentation found!"})
 		return
 	}
 

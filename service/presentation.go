@@ -7,7 +7,7 @@ import (
 
 type IPresService interface {
 	GetPresentationById(presId string) (*model.Pres, error)
-	GetAllPresentations() ([]*model.Pres, error)
+	GetAllPresentationsByUserId(userId string) ([]*model.Pres, error)
 	CreatePresentation(pres *model.Pres, userId string) error
 	UpdatePresentation(presId string, data model.Pres) (int64, error)
 	DeletePresentation(presId string) (int64, error)
@@ -28,8 +28,8 @@ func (svc *presService) GetPresentationById(presId string) (*model.Pres, error) 
 	return svc.presRepo.FindPresentationById(presId)
 }
 
-func (svc *presService) GetAllPresentations() ([]*model.Pres, error) {
-	return svc.presRepo.FindAllPresentations()
+func (svc *presService) GetAllPresentationsByUserId(userId string) ([]*model.Pres, error) {
+	return svc.presRepo.FindAllPresentationsByUserId(userId)
 }
 
 func (svc *presService) CreatePresentation(pres *model.Pres, userId string) error {
