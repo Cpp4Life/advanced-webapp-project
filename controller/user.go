@@ -105,7 +105,12 @@ func (u *userController) ChangePassword(c *gin.Context) {
 	userId := u.getUserId(c.GetHeader("Authorization"))
 	userProfile, _ := u.userService.GetProfile(userId)
 	if err := bcrypt.CompareHashAndPassword([]byte(userProfile.SavedPassword), []byte(jsonData.OldPassword)); err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]any{"message": "passwords do not match"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]any{"message": "old passwords do not match"})
+		return
+	}
+
+	if userProfile.IsSocial {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]any{"message": "cannot change password due to email is logged in via social account"})
 		return
 	}
 

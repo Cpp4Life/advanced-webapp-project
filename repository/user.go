@@ -145,6 +145,7 @@ func (db *userRepo) FindUserById(id string) (*model.User, error) {
 			&user.Email,
 			&user.CreatedAt,
 			&user.UpdatedAt,
+			&user.IsSocial,
 		)
 
 	if err != nil {

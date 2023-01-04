@@ -13,7 +13,7 @@ const (
 		"FROM `users` " +
 		"WHERE email LIKE ?;"
 
-	stmtSelectUserById = "SELECT id, full_name, username, password, address, profile_img, email, created_at, updated_at " +
+	stmtSelectUserById = "SELECT id, full_name, username, password, address, profile_img, email, created_at, updated_at, is_social " +
 		"FROM `users` " +
 		"WHERE id = ?;"
 

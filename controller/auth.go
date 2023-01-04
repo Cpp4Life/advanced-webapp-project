@@ -175,8 +175,13 @@ func (ctl *authController) ForgotPassword(c *gin.Context) {
 	}
 
 	user.IsVerified, _ = ctl.authService.GetVerifiedStatusByEmail(body.Email)
-	if !user.IsVerified {
+	if !user.IsVerified && !user.IsSocial {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]any{"message": "verify your account first in order to reset password"})
+		return
+	}
+
+	if user.IsSocial {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]any{"message": "cannot reset password due to email is logged in via social account"})
 		return
 	}
 
