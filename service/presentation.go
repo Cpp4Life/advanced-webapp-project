@@ -6,6 +6,7 @@ import (
 )
 
 type IPresService interface {
+	GetAllPresentations() ([]*model.Pres, error)
 	GetPresentationById(presId string) (*model.Pres, error)
 	GetAllPresentationsByUserId(userId string) ([]*model.Pres, error)
 	CreatePresentation(pres *model.Pres, userId string) error
@@ -22,6 +23,10 @@ func NewPresService(presRepo repository.IPresRepo) *presService {
 	return &presService{
 		presRepo: presRepo,
 	}
+}
+
+func (svc *presService) GetAllPresentations() ([]*model.Pres, error) {
+	return svc.presRepo.FindAllPresentations()
 }
 
 func (svc *presService) GetPresentationById(presId string) (*model.Pres, error) {

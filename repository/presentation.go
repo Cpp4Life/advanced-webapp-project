@@ -9,6 +9,7 @@ import (
 )
 
 type IPresRepo interface {
+	FindAllPresentations() ([]*model.Pres, error)
 	FindPresentationById(presId string) (*model.Pres, error)
 	FindAllPresentationsByUserId(userId string) ([]*model.Pres, error)
 	InsertPresentation(pres *model.Pres, userId string) error
@@ -25,6 +26,36 @@ func NewPresRepo(sqldb *sql.DB) *presRepo {
 	return &presRepo{
 		conn: sqldb,
 	}
+}
+
+func (db *presRepo) FindAllPresentations() ([]*model.Pres, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	rows, err := db.conn.QueryContext(ctx, stmtSelectAllPresentations)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var presList []*model.Pres
+	for rows.Next() {
+		var pres model.Pres
+		var user model.User
+		if err = rows.Scan(
+			&pres.Id,
+			&pres.Name,
+			&user.Id,
+			&pres.ModifiedAt,
+			&pres.CreatedAt); err != nil {
+			return nil, errors.New("error scanning")
+		}
+
+		pres.Owner = &user
+		presList = append(presList, &pres)
+	}
+
+	return presList, nil
 }
 
 func (db *presRepo) FindPresentationById(presId string) (*model.Pres, error) {

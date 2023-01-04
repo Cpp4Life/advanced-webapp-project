@@ -84,6 +84,9 @@ const (
 	stmtSelectPresentationById = "SELECT id, name, owner, modified_at, created_at " +
 		"FROM `presentations` WHERE id = ?; "
 
+	stmtSelectAllPresentations = "SELECT id, name, owner, modified_at, created_at " +
+		"FROM `presentations`;"
+
 	stmtSelectAllPresentationsByUserId = "SELECT id, name, modified_at, created_at " +
 		"FROM `presentations` " +
 		"WHERE owner = ?;"

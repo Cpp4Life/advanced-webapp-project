@@ -10,6 +10,7 @@ import (
 )
 
 type IPresController interface {
+	GetAllPresentations(c *gin.Context)
 	GetPresentationById(c *gin.Context)
 	GetAllPresentationsByUserId(c *gin.Context)
 	CreatePresentation(c *gin.Context)
@@ -32,6 +33,22 @@ func NewPresController(logger *utils.Logger, jwtSvc service.IJWTService, presSvc
 		presService: presSvc,
 		userService: userSvc,
 	}
+}
+
+func (p *presController) GetAllPresentations(c *gin.Context) {
+	pres, err := p.presService.GetAllPresentations()
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]any{"message": "presentation not found!"})
+		p.logger.Error(err.Error())
+		return
+	}
+
+	c.AbortWithStatusJSON(http.StatusOK, map[string]any{
+		"data": pres,
+	})
+
+	return
 }
 
 func (p *presController) GetPresentationById(c *gin.Context) {
