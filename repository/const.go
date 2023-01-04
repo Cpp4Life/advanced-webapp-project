@@ -6,10 +6,10 @@ const (
 	dbTimeout = 10 * time.Second
 
 	stmtInsertUser = "INSERT INTO `users` " +
-		"(username, password, full_name, address, profile_img, user_tel, email, is_verified, verification_code, created_at, updated_at) " +
-		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+		"(username, password, full_name, address, profile_img, user_tel, email, is_verified, verification_code, created_at, updated_at, is_social) " +
+		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 
-	stmtSelectUserByEmail = "SELECT id, full_name, username, password, address, profile_img, email, created_at, updated_at " +
+	stmtSelectUserByEmail = "SELECT id, full_name, username, password, address, profile_img, email, created_at, updated_at, is_social " +
 		"FROM `users` " +
 		"WHERE email LIKE ?;"
 

@@ -16,4 +16,5 @@ type User struct {
 	VerificationCode string    `json:"verification_code,omitempty"`
 	CreatedAt        time.Time `json:"created_at,omitempty"`
 	UpdatedAt        time.Time `json:"updated_at,omitempty"`
+	IsSocial         bool      `json:"is_social,omitempty"`
 }

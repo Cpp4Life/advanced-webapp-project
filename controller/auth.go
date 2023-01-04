@@ -85,10 +85,20 @@ func (ctl *authController) Register(c *gin.Context) {
 	// Check if email is whether taken or not
 	isEmailCreated, _ := ctl.authService.GetUserByEmail(user.Email)
 	if isEmailCreated != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{
-			"message": fmt.Sprintf("%s is in use", isEmailCreated.Email),
-		})
-		return
+		if isEmailCreated.IsSocial && user.IsSocial {
+			userId := strconv.Itoa(int(isEmailCreated.Id))
+			generatedToken := ctl.jwtService.GenerateToken(userId, isEmailCreated.Email)
+			c.JSON(http.StatusOK, map[string]any{
+				"user":  isEmailCreated,
+				"token": generatedToken,
+			})
+			return
+		} else {
+			c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{
+				"message": fmt.Sprintf("%s is in use", isEmailCreated.Email),
+			})
+			return
+		}
 	}
 
 	code := randstr.String(20)
@@ -103,22 +113,29 @@ func (ctl *authController) Register(c *gin.Context) {
 		return
 	}
 
-	email := service.Message{
-		URL:       "https://kameyoko.up.railway.app/api/v1/auth/verify-email/" + code,
-		FullName:  user.FullName,
-		Subject:   "Your account verification code",
-		Paragraph: "Please verify your account to be able to login",
+	if user.IsSocial {
+		userId := strconv.Itoa(int(user.Id))
+		generatedToken := ctl.jwtService.GenerateToken(userId, user.Email)
+		c.JSON(http.StatusOK, map[string]any{
+			"user":  user,
+			"token": generatedToken,
+		})
+	} else {
+		email := service.Message{
+			URL:       "https://kameyoko.up.railway.app/api/v1/auth/verify-email/" + code,
+			FullName:  user.FullName,
+			Subject:   "Your account verification code",
+			Paragraph: "Please verify your account to be able to login",
+		}
+
+		go func(user *model.User, email *service.Message) {
+			ctl.mailService.SendMail(user, email)
+		}(&user, &email)
+
+		c.JSON(http.StatusCreated, map[string]any{
+			"message": "We sent an email with a verification code to " + user.Email,
+		})
 	}
-
-	go func(user *model.User, email *service.Message) {
-		ctl.mailService.SendMail(user, email)
-	}(&user, &email)
-
-	c.JSON(http.StatusCreated, map[string]any{
-		"message": "We sent an email with a verification code to " + user.Email,
-	})
-
-	return
 }
 
 func (ctl *authController) VerifyEmail(c *gin.Context) {

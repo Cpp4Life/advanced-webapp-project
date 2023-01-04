@@ -52,6 +52,7 @@ func (db *userRepo) InsertUser(user *model.User) (int64, error) {
 		user.VerificationCode,
 		time.Now(),
 		time.Now(),
+		user.IsSocial,
 	)
 
 	if err != nil {
@@ -80,6 +81,7 @@ func (db *userRepo) FindUserByEmail(email string) (*model.User, error) {
 			&user.Email,
 			&user.CreatedAt,
 			&user.UpdatedAt,
+			&user.IsSocial,
 		)
 
 	if err != nil {

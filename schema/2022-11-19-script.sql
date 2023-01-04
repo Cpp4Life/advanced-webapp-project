@@ -13,7 +13,8 @@ CREATE TABLE `users`
     `is_verified`       BOOLEAN      DEFAULT FALSE NOT NULL,
     `verification_code` VARCHAR(50)  DEFAULT '',
     `created_at`        DATETIME,
-    `updated_at`        DATETIME
+    `updated_at`        DATETIME,
+    `is_social`         BOOLEAN      DEFAULT FALSE
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `groups`
