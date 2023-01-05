@@ -7,6 +7,28 @@
 	},
 	"item": [
 		{
+			"name": "Checker",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{railHost}}/api",
+							"host": [
+								"{{railHost}}"
+							],
+							"path": [
+								"api"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "User",
 			"item": [
 				{
@@ -19,7 +41,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\":\"bensen.pacey@falltrack.net\",\n    \"password\":\"12341234\"\n}",
+							"raw": "{\n    \"email\": \"someone@test.com\",\n    \"password\": \"12341234\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -47,7 +69,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\":\"someone\",\n    \"password\":\"P@ssw0rd\",\n    \"full_name\":\"Daniel Tr\",\n    \"user_tel\":\"\",\n    \"email\":\"dattruong1220@gmail.com\",\n    \"address\":\"somewhere on earth\" \n}",
+							"raw": "{\n    \"username\":\"someone\",\n    \"password\":\"P@ssw0rd\",\n    \"full_name\":\"Daniel Tr\",\n    \"user_tel\":\"\",\n    \"email\":\"tgdat190@gmail.com\",\n    \"address\":\"somewhere on earth\",\n    \"is_social\": true \n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -75,7 +97,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODEzNzI1LCJpYXQiOjE2NzA2NDA5MjUsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.3BlkOgZ00SGwUnYnBz0Tdc3Y-1XoJftKT6a25FVgF4vDgOwnSPEfv_UUr9kJgyuX",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiOSIsImVtYWlsIjoiZGF0dHJ1b25nMTIyMEBnbWFpbC5jb20iLCJleHAiOjE2NzMwMTg5NjcsImlhdCI6MTY3Mjg0NjE2NywiaXNzIjoiMjAyMi0xOS0xMS0xOUtUUE0zLUFkdmFuY2VkLVdlYi1BcHAifQ.umlTIeyQgm6rCCB-STC1bZtEdLLk2j8tcyWELSB_pJRr8nNewSRSkj8Y7SPreX4j",
 								"type": "text"
 							}
 						],
@@ -139,15 +161,22 @@
 				},
 				{
 					"name": "Get groups by userid",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcyOTMwNTUwLCJpYXQiOjE2NzI3NTc3NTAsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.TMOai8BDjuSas47FD21H09OIIHpgTve8VibRBgwyd_FspfyRv-xiocs5Nzz3fiIm",
 								"type": "text"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "{{kahootHost}}/{{v1}}/accounts/manage-groups/",
 							"host": [
@@ -170,7 +199,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcyOTMwNTUwLCJpYXQiOjE2NzI3NTc3NTAsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.TMOai8BDjuSas47FD21H09OIIHpgTve8VibRBgwyd_FspfyRv-xiocs5Nzz3fiIm",
 								"type": "text"
 							}
 						],
@@ -227,15 +256,12 @@
 				},
 				{
 					"name": "Forgot password",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
-						"method": "GET",
+						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\":\"dattruong1220@gmail.com\"\n}",
+							"raw": "{\n    \"email\":\"tgdat19@gmail.com\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -251,6 +277,40 @@
 								"{{v1}}",
 								"auth",
 								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change password",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiOSIsImVtYWlsIjoiZGF0dHJ1b25nMTIyMEBnbWFpbC5jb20iLCJleHAiOjE2NzMwMjIxODMsImlhdCI6MTY3Mjg0OTM4MywiaXNzIjoiMjAyMi0xOS0xMS0xOUtUUE0zLUFkdmFuY2VkLVdlYi1BcHAifQ.SR9v99kYJ1RgpSssFk1WBZjv3jXSoAqZX2S5HXuAB0fD2yX84RXW_ZeOlHL2EBs_",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"old_password\":\"12341234\",\n    \"new_password\":\"P@ssw0rd\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/accounts/change-password",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"accounts",
+								"change-password"
 							]
 						}
 					},
@@ -512,13 +572,37 @@
 			"name": "Presentation",
 			"item": [
 				{
+					"name": "Get all presentations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiOSIsImVtYWlsIjoiZGF0dHJ1b25nMTIyMEBnbWFpbC5jb20iLCJleHAiOjE2NzMwMTg5NjcsImlhdCI6MTY3Mjg0NjE2NywiaXNzIjoiMjAyMi0xOS0xMS0xOUtUUE0zLUFkdmFuY2VkLVdlYi1BcHAifQ.umlTIeyQgm6rCCB-STC1bZtEdLLk2j8tcyWELSB_pJRr8nNewSRSkj8Y7SPreX4j",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/presentation",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"presentation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get presentation by id",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcyOTMwNTUwLCJpYXQiOjE2NzI3NTc3NTAsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.TMOai8BDjuSas47FD21H09OIIHpgTve8VibRBgwyd_FspfyRv-xiocs5Nzz3fiIm",
 								"type": "text"
 							}
 						],
@@ -538,13 +622,13 @@
 					"response": []
 				},
 				{
-					"name": "Get all presentations",
+					"name": "Get all presentations by user id",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcyOTMwNTUwLCJpYXQiOjE2NzI3NTc3NTAsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.TMOai8BDjuSas47FD21H09OIIHpgTve8VibRBgwyd_FspfyRv-xiocs5Nzz3fiIm",
 								"type": "text"
 							}
 						],
@@ -569,13 +653,13 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcxNTMyMDAzLCJpYXQiOjE2NzEzNTkyMDMsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.OfvdK9XivZiQChDBRFjncFjcXPcrp97smQXLM6W8QHZDpb_Yp_sdIM7YVVANGnP6",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\":\"new api for presentation\"\n}",
+							"raw": "{\n    \"name\":\"My presentation\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -638,12 +722,12 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjczMDk3MzExLCJpYXQiOjE2NzI5MjQ1MTEsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.H5horPZzb_3Uv1XukTP0BxvmN4m9HZDq3rnrvCjCZx2fVYTSjUsXnnpo2g-9wHFU",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "{{kahootHost}}/{{v1}}/presentation/delete/43625538",
+							"raw": "{{kahootHost}}/{{v1}}/presentation/delete/12341234",
 							"host": [
 								"{{kahootHost}}"
 							],
@@ -651,7 +735,7 @@
 								"{{v1}}",
 								"presentation",
 								"delete",
-								"43625538"
+								"12341234"
 							]
 						}
 					},
@@ -664,19 +748,19 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcwODE1MjY4LCJpYXQiOjE2NzA2NDI0NjgsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.XkgEupAxWxGrYs7X19JpIHFZS19ibl-RsNKRtkekx0ZEhcnkYRqgQkjGQsEOG2Qn",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcxNTMyMDAzLCJpYXQiOjE2NzEzNTkyMDMsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.OfvdK9XivZiQChDBRFjncFjcXPcrp97smQXLM6W8QHZDpb_Yp_sdIM7YVVANGnP6",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "{{kahootHost}}/{{v1}}/presentation/91424173/slides/get-all",
+							"raw": "{{kahootHost}}/{{v1}}/presentation/76818379/slides/get-all",
 							"host": [
 								"{{kahootHost}}"
 							],
 							"path": [
 								"{{v1}}",
 								"presentation",
-								"91424173",
+								"76818379",
 								"slides",
 								"get-all"
 							]
@@ -691,13 +775,13 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNyIsImVtYWlsIjoiYmVuc2VuLnBhY2V5QGZhbGx0cmFjay5uZXQiLCJleHAiOjE2NzE1MTU2NTYsImlhdCI6MTY3MTM0Mjg1NiwiaXNzIjoiMjAyMi0xOS0xMS0xOUtUUE0zLUFkdmFuY2VkLVdlYi1BcHAifQ.XCZCr_ynjZs9mwCyL3ZyxdoQJHPdKUGHFv-nzy5Qb7J8NF6D2KtAfIHPNVsSUFcz",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcxNTMyMDAzLCJpYXQiOjE2NzEzNTkyMDMsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.OfvdK9XivZiQChDBRFjncFjcXPcrp97smQXLM6W8QHZDpb_Yp_sdIM7YVVANGnP6",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"type\": 9,\n    \"content\": {\n        \"title\": \"paragraph title\",\n        \"meta\": \"paragraph meta\",\n        \"paragraph\": {\n            \"heading\": \"para heading\",\n            \"text\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.\"\n        }\n    }\n}",
+							"raw": "{\n    \"type\": 1,\n    \"content\": {\n        \"title\": \"multiple choice title\",\n        \"meta\": \"multiple choice meta\",\n        \"options\": [\n            {\n                \"name\": \"tonight\"\n            },\n            {\n                \"name\": \"tomorrow night\"\n            }\n        ]\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -705,14 +789,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{kahootHost}}/{{v1}}/presentation/81554810/slide/create",
+							"raw": "{{kahootHost}}/{{v1}}/presentation/76818379/slide/create",
 							"host": [
 								"{{kahootHost}}"
 							],
 							"path": [
 								"{{v1}}",
 								"presentation",
-								"81554810",
+								"76818379",
 								"slide",
 								"create"
 							]
@@ -1059,6 +1143,15 @@
 								"type": "text"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{kahootHost}}/{{v1}}/presentation/91424173/vote/39504782/submit?option_id=16",
 							"host": [
@@ -1081,8 +1174,64 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Group presentation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkiLCJlbWFpbCI6ImxvbmVseUBndXkuY29tIiwiZXhwIjoxNjcyNzU5MTg1LCJpYXQiOjE2NzI1ODYzODUsImlzcyI6IjIwMjItMTktMTEtMTlLVFBNMy1BZHZhbmNlZC1XZWItQXBwIn0.sscYiI1_D7OUp9Mhd6zW9yCiz2iEsAf62Wackr4GfIQHkdcqDpOIMe-CqC5qZpRp",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"group_id\": 2,\n    \"user_id\": 19\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{kahootHost}}/{{v1}}/presentation/71280942/group-presentation",
+							"host": [
+								"{{kahootHost}}"
+							],
+							"path": [
+								"{{v1}}",
+								"presentation",
+								"71280942",
+								"group-presentation"
+							]
+						}
+					},
+					"response": []
 				}
 			]
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://kameyoko-dev.up.railway.app/public",
+					"protocol": "https",
+					"host": [
+						"kameyoko-dev",
+						"up",
+						"railway",
+						"app"
+					],
+					"path": [
+						"public"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -1114,6 +1263,11 @@
 		{
 			"key": "v1",
 			"value": "api/v1",
+			"type": "string"
+		},
+		{
+			"key": "railHost",
+			"value": "https://kameyoko.up.railway.app",
 			"type": "string"
 		}
 	]

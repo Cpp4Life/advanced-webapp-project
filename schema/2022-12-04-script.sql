@@ -58,8 +58,38 @@ CREATE TABLE `paragraphs`
     `id`         BIGINT AUTO_INCREMENT PRIMARY KEY,
     `heading`    VARCHAR(150) DEFAULT '',
     `text`       VARCHAR(800) DEFAULT '',
-    `image`      varchar(250) DEFAULT '',
+    `image`      VARCHAR(250) DEFAULT '',
     `content_id` BIGINT
+) DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE `messages`
+(
+    `id`         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `user_id`    BIGINT,
+    `present_id` BIGINT,
+    `message`    VARCHAR(250) DEFAULT '',
+    `username`   VARCHAR(250) DEFAULT ''
+) DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE `questions`
+(
+    `id`          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `user_id`     BIGINT,
+    `present_id`  BIGINT,
+    `question`    VARCHAR(250) DEFAULT '',
+    `total_votes` INT          DEFAULT 0,
+    `username`    VARCHAR(250) DEFAULT '',
+    `is_answered` INT          DEFAULT 0,
+    `created_at`  DATETIME
+) DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE `question_user`
+(
+    `id`          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `user_id`     BIGINT,
+    `present_id`  BIGINT,
+    `question_id` BIGINT,
+    `created_at`  DATETIME
 ) DEFAULT CHARSET = utf8mb4;
 
 ALTER TABLE `presentations`
