@@ -154,7 +154,7 @@ func (ctl *authController) VerifyEmail(c *gin.Context) {
 		return
 	}
 
-	c.Redirect(http.StatusPermanentRedirect, "http://localhost:3000/login?redirect=")
+	c.Redirect(http.StatusPermanentRedirect, "https://kameyoko-lime.vercel.app/login")
 }
 
 func (ctl *authController) ForgotPassword(c *gin.Context) {
@@ -194,7 +194,7 @@ func (ctl *authController) ForgotPassword(c *gin.Context) {
 	}
 
 	email := service.Message{
-		URL:       "http://localhost:3000/login",
+		URL:       "https://kameyoko-lime.vercel.app/login",
 		FullName:  user.FullName,
 		Subject:   "New password for account",
 		Paragraph: fmt.Sprintf("Here is your new password %s. Please keep it secret!", newPassword),
